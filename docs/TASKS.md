@@ -120,6 +120,8 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Pick 2 favourites per Catch; only picks register (schema v4 `registered`); auto-pick top 2 if the user leaves or the app closes | Team rule: users choose which colours enter their FarbeDex |
 | 2026-10-10 | Shiny colours: 1/400 per Rare+ pick, gold rim + sparkles, special reveal animations and sound | Team request |
 | 2026-10-10 | Buttons never wrap (single line, shrink to fit); export labels Save / Share; rarity pill single line | Team UI feedback |
+| 2026-10-10 | Field Notes: all 9 cards verified by the team (`verifiedBy`) and shown | Team approval |
+| 2026-10-10 | Subject label: 2–4 prompts per subject + colour sanity check (subject must be supported by the palette, else no label) | Team report: sky photo labelled "fern"; laptop check now sand/water/grass/flower on the samples |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)

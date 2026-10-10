@@ -9,6 +9,7 @@ export interface FieldNote {
   sourceTitle: string;
   sourceUrl: string;
   verified: boolean;
+  verifiedBy?: string;
 }
 
 export function verifiedFieldNotes(all: readonly FieldNote[] = notes as FieldNote[]): FieldNote[] {

@@ -14,6 +14,8 @@ export interface RefereeResult {
   scene: SceneDecision;
   subject: { label: string; score: number } | null;
   sceneProbs: Record<string, number>;
+  /** Full subject distribution, refined against the palette in capture.ts (subjectPrior). */
+  subjectProbs?: Record<string, number>;
   ms: number;
 }
 
@@ -49,7 +51,7 @@ export async function runReferee(img: RgbaImage): Promise<RefereeResult> {
       return r;
     }
     const s = scoreReferee(vec, EMB);
-    const r: RefereeResult = { scene: s.scene, subject: s.subject, sceneProbs: s.sceneProbs, ms: Date.now() - t0 };
+    const r: RefereeResult = { scene: s.scene, subject: s.subject, sceneProbs: s.sceneProbs, subjectProbs: s.subjectProbs, ms: Date.now() - t0 };
     log(r);
     return r;
   } catch (e) {

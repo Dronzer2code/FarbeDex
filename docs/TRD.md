@@ -203,7 +203,7 @@ Exact prompt strings: `scripts/build-label-embeddings.mjs`. Subject labels add *
 
 **Lenient gate (team decision 2026-10-10, after on-phone tests rejected balconies, roofs and pot plants as INDOOR):** accept by default; reject only when `max(P(INDOOR), P(SCREEN)) ≥ REJECT_MIN (0.6)` **and** it exceeds `P(OUTDOOR_NATURE) + P(OUTDOOR_URBAN)`. PRINT is kept as a label but never rejects. INDOOR prompts describe only clear home interiors (bed, kitchen, appliances, sofa, bathroom); outdoor prompts include balconies, rooftops and potted plants. Constants in `referee/config.ts`; calibrated in T6 (record results in `docs/TASKS.md`).
 
-Subject labels (group `subject`, prompt template "a close-up photo of {label}"): sky, clouds, sunset sky, tree leaves, autumn leaves, grass, fern, moss, lichen, tree bark, flower, fruit, soil, rock, sand, water, wood, rusty metal, brick wall, painted wall. Stored subject = argmax label and its probability.
+Subject labels (group `subject`; 2–4 prompts each since 2026-10-10, see `scripts/build-label-embeddings.mjs`; the winning label must also be supported by the photo's palette — `src/referee/subjectPrior.ts` — otherwise no subject is stored): sky, clouds, sunset sky, tree leaves, autumn leaves, grass, fern, moss, lichen, tree bark, flower, fruit, soil, rock, sand, water, wood, rusty metal, brick wall, painted wall. Stored subject = argmax label and its probability.
 
 ## NAMER (Gemma 3 270M IT, llama.rn)
 

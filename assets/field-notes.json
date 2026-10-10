@@ -3,81 +3,118 @@
     "id": "blue-is-rare",
     "title": "Why blue is hard to find",
     "body": "Few plants and animals make a true blue pigment. Many natural blues, such as butterfly wings and bird feathers, are structural colour: tiny structures scatter or interfere with light so blue wavelengths reach your eye.",
-    "families": ["Azure", "Blue", "Indigo"],
+    "families": [
+      "Azure",
+      "Blue",
+      "Indigo"
+    ],
     "sourceTitle": "Structural coloration (Wikipedia, with primary references)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Structural_coloration",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "sky-blue",
     "title": "Why the sky is blue",
     "body": "Sunlight contains all colours. Air molecules scatter shorter, bluer wavelengths much more strongly than red ones (Rayleigh scattering), so blue light reaches you from every direction of the sky.",
-    "families": ["Azure", "Blue"],
+    "families": [
+      "Azure",
+      "Blue"
+    ],
     "sourceTitle": "NASA Space Place: Why Is the Sky Blue?",
     "sourceUrl": "https://spaceplace.nasa.gov/blue-sky/en/",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "sunset-reds",
     "title": "Why sunsets turn red",
     "body": "Near sunrise and sunset, light crosses much more atmosphere to reach you. Most blue light is scattered away along the path, so the reds and oranges are what remain.",
-    "families": ["Red", "Vermilion", "Orange"],
+    "families": [
+      "Red",
+      "Vermilion",
+      "Orange"
+    ],
     "sourceTitle": "NOAA National Weather Service: Why is the sky blue?",
     "sourceUrl": "https://www.weather.gov/fgz/SkyBlue",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "leaves-green",
     "title": "Why leaves are green",
     "body": "Chlorophyll absorbs mostly red and blue light for photosynthesis and reflects much of the green, which is why healthy leaves look green.",
-    "families": ["Green", "Lime", "Jade"],
+    "families": [
+      "Green",
+      "Lime",
+      "Jade"
+    ],
     "sourceTitle": "Chlorophyll (Wikipedia, with primary references)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Chlorophyll",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "autumn-colours",
     "title": "Where autumn colours come from",
     "body": "As chlorophyll breaks down in autumn, yellow and orange carotenoids that were already in the leaf become visible. Many reds come from anthocyanins that some trees produce in autumn.",
-    "families": ["Gold", "Orange", "Red"],
+    "families": [
+      "Gold",
+      "Orange",
+      "Red"
+    ],
     "sourceTitle": "Autumn leaf color (Wikipedia, with primary references)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Autumn_leaf_color",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "golden-angle",
     "title": "Spirals in seed heads",
     "body": "Many plants place seeds or leaves about 137.5 degrees apart, which produces spiral counts that are often consecutive Fibonacci numbers. A large citizen-science study of sunflowers found that a notable share of heads did not follow the pattern.",
-    "families": ["Gold", "Green"],
+    "families": [
+      "Gold",
+      "Green"
+    ],
     "sourceTitle": "Swinton et al. 2016, Royal Society Open Science (PMC)",
     "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4892450/",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "nautilus-myth",
     "title": "The nautilus is not golden",
     "body": "The chambered nautilus shell is a logarithmic spiral, but measurements show it is not the golden-ratio spiral it is often said to be.",
-    "families": ["Neutral"],
+    "families": [
+      "Neutral"
+    ],
     "sourceTitle": "Golden ratio — disputed observations (Wikipedia, with primary references)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Golden_ratio",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "rule-of-thirds",
     "title": "The rule of thirds is a habit, not a law",
     "body": "The rule of thirds is a composition guideline named by John Thomas Smith in 1797. It is a useful starting point for framing a scene, not a law of nature.",
-    "families": ["Neutral"],
+    "families": [
+      "Neutral"
+    ],
     "sourceTitle": "Rule of thirds (Wikipedia, citing Smith 1797)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Rule_of_thirds",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   },
   {
     "id": "honeycomb",
     "title": "Why bees build hexagons",
     "body": "A grid of regular hexagons divides a flat surface into equal areas with the least total perimeter. This is the honeycomb conjecture, proved by Thomas Hales in 1999.",
-    "families": ["Gold"],
+    "families": [
+      "Gold"
+    ],
     "sourceTitle": "Hales, The Honeycomb Conjecture (arXiv:math/9906042)",
     "sourceUrl": "https://arxiv.org/abs/math/9906042",
-    "verified": false
+    "verified": true,
+    "verifiedBy": "team, 2026-10-10"
   }
 ]

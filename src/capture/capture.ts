@@ -5,6 +5,7 @@ import { extractPalette, type Swatch } from '../color/extract';
 import { commitCatch } from '../db/catchRepo';
 import { getDb } from '../db/db';
 import { runReferee } from '../referee/referee';
+import { refineSubject } from '../referee/subjectPrior';
 import { bumpData } from '../store/data';
 import { computeLiveChecks, type LiveCheckResult, type RejectReason } from './liveChecks';
 import { deleteCaptureFiles, deleteFileUri, prepareImages } from './imagePrep';
@@ -84,6 +85,9 @@ export async function runCapture(input: CaptureInput): Promise<CaptureOutcome> {
       return { kind: 'rejected', reason: live.reason ?? 'ERROR', live, timings };
     }
 
+    // Subject label must be supported by the photo's real colours (no "fern" for a blue sky).
+    const subject = referee.subjectProbs ? refineSubject(referee.subjectProbs, extraction.swatches) : referee.subject;
+
     const tC = Date.now();
     const db = await getDb();
     const result = await commitCatch(db, {
@@ -93,8 +97,8 @@ export async function runCapture(input: CaptureInput): Promise<CaptureOutcome> {
       thumbPath: prep.thumbPath,
       width: prep.width,
       height: prep.height,
-      subjectLabel: referee.subject?.label ?? null,
-      subjectScore: referee.subject?.score ?? null,
+      subjectLabel: subject?.label ?? null,
+      subjectScore: subject?.score ?? null,
       sceneLabel: referee.scene.label,
       sceneScore: referee.scene.score,
       otherPct: extraction.otherPct,

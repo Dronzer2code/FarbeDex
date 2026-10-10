@@ -55,10 +55,30 @@ const SCENE = [
   },
 ];
 
-const SUBJECTS = [
-  'sky', 'clouds', 'sunset sky', 'tree leaves', 'autumn leaves', 'grass', 'fern', 'moss', 'lichen', 'tree bark',
-  'flower', 'potted plant', 'fruit', 'soil', 'rock', 'sand', 'water', 'wood', 'rusty metal', 'brick wall', 'painted wall',
-].map((label) => ({ id: label, prompts: [`a close-up photo of ${label}`] }));
+// Several prompts per subject (team report 2026-10-10: a sky photo was labelled "fern" with one prompt each).
+const SUBJECTS = Object.entries({
+  sky: ['a photo of the blue sky', 'a photo of a clear sky', 'a wide photo of the sky above buildings', 'a photo looking up at the sky'],
+  clouds: ['a photo of white clouds in the sky', 'a photo of a cloudy sky', 'a photo of grey clouds'],
+  'sunset sky': ['a photo of a sunset sky', 'a photo of an orange and pink sky at dusk', 'a photo of the sky at sunrise'],
+  'tree leaves': ['a close-up photo of green tree leaves', 'a photo of a tree canopy', 'a photo of leaves on a branch'],
+  'autumn leaves': ['a photo of autumn leaves', 'a photo of red and orange leaves', 'a photo of fallen yellow leaves'],
+  grass: ['a photo of green grass', 'a close-up photo of a lawn', 'a photo of a grassy field'],
+  fern: ['a close-up photo of fern fronds', 'a photo of a fern plant'],
+  moss: ['a close-up photo of green moss', 'a photo of moss on a stone'],
+  lichen: ['a close-up photo of lichen on a rock', 'a photo of lichen on tree bark'],
+  'tree bark': ['a close-up photo of tree bark', 'a photo of a tree trunk'],
+  flower: ['a close-up photo of a flower', 'a photo of colourful flowers', 'a photo of a blooming plant'],
+  'potted plant': ['a photo of a potted plant', 'a photo of plants in pots on a balcony', 'a photo of a flower pot'],
+  fruit: ['a close-up photo of fruit', 'a photo of berries on a bush'],
+  soil: ['a close-up photo of soil', 'a photo of dirt on the ground'],
+  rock: ['a close-up photo of a rock', 'a photo of stones'],
+  sand: ['a close-up photo of sand', 'a photo of a sandy beach'],
+  water: ['a photo of water', 'a photo of a lake or the sea', 'a photo of a river'],
+  wood: ['a close-up photo of wooden planks', 'a photo of a wooden fence'],
+  'rusty metal': ['a close-up photo of rusty metal', 'a photo of a rusty gate'],
+  'brick wall': ['a photo of a brick wall', 'a close-up photo of red bricks'],
+  'painted wall': ['a photo of a painted wall', 'a photo of a building facade', 'a photo of a concrete wall'],
+}).map(([id, prompts]) => ({ id, prompts }));
 
 function l2(v) {
   const n = Math.hypot(...v) || 1;

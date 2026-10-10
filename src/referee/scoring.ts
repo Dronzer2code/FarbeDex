@@ -41,6 +41,7 @@ export interface RefereeScore {
   scene: SceneDecision;
   subject: { label: string; score: number } | null;
   sceneProbs: Record<string, number>;
+  subjectProbs: Record<string, number>;
   outdoorP: number;
 }
 
@@ -65,6 +66,7 @@ export function scoreReferee(imageVec: ArrayLike<number>, emb: LabelEmbeddings, 
     scene,
     subject: emb.subject.length ? { label: emb.subject[bs].id, score: subP[bs] } : null,
     sceneProbs,
+    subjectProbs: Object.fromEntries(emb.subject.map((l, i) => [l.id, subP[i]])),
     outdoorP,
   };
 }
