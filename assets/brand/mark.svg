@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- FarbeDex prism drop: a drop split by three diagonal bands (original mark). -->
+  <defs><clipPath id="d"><path d="M32 3 C32 3 11 26 11 40 A21 21 0 0 0 53 40 C53 26 32 3 32 3 Z"/></clipPath></defs>
+  <g clip-path="url(#d)">
+    <polygon points="0,0 64,0 64,14 0,46" fill="#F2C48D"/>
+    <polygon points="0,46 64,14 64,38 0,70" fill="#D9774E"/>
+    <polygon points="0,70 64,38 64,64 0,64" fill="#3E5C7E"/>
+  </g>
+</svg>

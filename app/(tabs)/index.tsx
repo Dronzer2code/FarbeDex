@@ -9,9 +9,14 @@ export default function Home() {
     <Screen title={'What colour are you\nhunting today?'}>
       <Text style={styles.body}>Home is built in T11.</Text>
       {__DEV__ ? (
-        <Link href="/dev/ai-spike" style={styles.link}>
-          Open AI spike (dev)
-        </Link>
+        <>
+          <Link href="/dev/ai-spike" style={styles.link}>
+            Open AI spike (dev)
+          </Link>
+          <Link href="/dev/ui" style={styles.link}>
+            Open UI kit (dev)
+          </Link>
+        </>
       ) : null}
     </Screen>
   );

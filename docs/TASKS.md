@@ -35,7 +35,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T1 | A | Native spike: add `onnxruntime-react-native` + `llama.rn`, rebuild dev-client APK, model downloader with dev-only LAN model source (`npx serve .models -l 8099`; no adb), load MobileCLIP vision ONNX and Gemma 3 270M GGUF from app storage, run one inference each, log time | T0 | 4 h | VERIFY-2, -4, -5, -7, -8 recorded; CP1 | DOING (VERIFY recorded; `/dev/ai-spike` built; waiting for on-phone run; VERIFY-2 license decision open) |
 | T2 | B | `src/color/*` + `src/dex/*` + `scripts/build-dex.ts` + tests (oklab, reachable, rarity counts, map, kmeans determinism, extract %) | T0 | 4 h | dex-reachable, dex-rarity, kmeans, extract tests pass | DONE (114 tests green; 32³ grid reaches all 151, rarest #080/#089 = 1 sample, most common 2235 — matches prototype) |
 | T3 | B | `src/db/*` schema + migrations + catchRepo (commit/delete with recompute) + entryRepo + counting tests | T2 | 2.5 h | counting.test passes | DONE (repos take a `DbLike` interface; tests run the real SQL on in-memory `node:sqlite`) |
-| T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | TODO |
+| T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | DONE (code; visual check on phone pending in the CP2 checklist) |
 | T5 | A | Camera screen + `capture/*` (takePicture, motion ring buffer, imagePrep, liveChecks without Referee yet) → commit → navigate to result | T1, T3 | 3 h | AC-F2.1, AC-F2.4, AC-F2.5; MOTION_MIN calibrated | TODO |
 | T6 | A | Referee: `build-label-embeddings.mjs` (laptop), preprocess, scoring, scene gate, subject label; calibrate with 10 screen + 10 outdoor shots; record results here | T1, T5 | 3 h | AC-F2.2, AC-F2.3 | TODO |
 | T7 | B | Catch result, Album, Photo Overview screens | T3, T4, T5 | 3 h | AC-F3.1, AC-F7.1, AC-F8.1; CP2 | TODO |
@@ -85,6 +85,8 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Cmax memo computes at the rounded key values (L = round(L·200)/200, h = round(h)) | Result depends only on the memo key → deterministic |
 | 2026-10-10 | Repositories take a `DbLike` (expo-sqlite subset); `tests/helpers/nodeSqlite.ts` wraps Node 24's `node:sqlite` | Test the production SQL instead of a mock |
 | 2026-10-10 | Invariant: `swatches.is_new = 1` exactly for the Catch whose id is `entries.first_catch_id`; deleting the first Catch moves NEW to the next earliest | Keeps NEW badges consistent with "first caught" stats after deletes (AC-F8.1) |
+| 2026-10-10 | Mythical iridescent border = 36-wedge conic SVG rotated with Reanimated (static under reduce-motion) | React Native has no conic gradient |
+| 2026-10-10 | Brand mark colours: light `#F2C48D`, mid `#D9774E`, deep `#3E5C7E` (sunset-to-sky prism) | UI_DESIGN gives the shape, not the colours |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
