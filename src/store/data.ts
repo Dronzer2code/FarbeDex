@@ -22,6 +22,7 @@ export function useDbQuery<T>(load: (db: DbLike) => Promise<T>, deps: unknown[])
   const version = useDataVersion((s) => s.version);
   const [data, setData] = useState<T>();
   const [tick, setTick] = useState(0);
+  const depsKey = JSON.stringify(deps);
   useFocusEffect(
     useCallback(() => {
       let alive = true;
@@ -33,7 +34,7 @@ export function useDbQuery<T>(load: (db: DbLike) => Promise<T>, deps: unknown[])
         alive = false;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [version, tick, ...deps]),
+    }, [version, tick, depsKey]),
   );
   return { data, reload: () => setTick((t) => t + 1) };
 }

@@ -1,6 +1,6 @@
 // Original FarbeDex marks (docs/UI_DESIGN.md → BRAND). The mark is a drop split by three diagonal
 // bands — never a circle with a horizontal band.
-import { useRef } from 'react';
+import { useState } from 'react';
 import Svg, { Circle, ClipPath, Defs, G, Path, Polygon } from 'react-native-svg';
 
 import type { Rarity } from '../dex/rules';
@@ -13,7 +13,7 @@ let clipSeq = 0;
 
 /** Prism-drop mark. `mono` draws all bands in one colour (watermarks) with stepped opacity. */
 export function FarbeMark({ size = 32, mono, opacity = 1 }: { size?: number; mono?: string; opacity?: number }) {
-  const id = useRef(`drop${clipSeq++}`).current;
+  const [id] = useState(() => `drop${clipSeq++}`);
   const [light, mid, deep] = mono ? [mono, mono, mono] : MARK_COLORS;
   return (
     <Svg width={size} height={size} viewBox="0 0 64 64" opacity={opacity}>
