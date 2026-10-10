@@ -37,6 +37,7 @@ describe('namer prompt', () => {
     };
     expect(s.properties.names.minItems).toBe(2);
     expect(s.properties.names.items.required).toEqual(['no', 'word']);
+    expect((buildSchema([1]) as { required: string[] }).required).toEqual(['names', 'note', 'title']);
     expect(s.properties.names.items.properties.no.enum).toEqual([67, 4]);
     expect((buildSchema([]) as { properties: { names: { maxItems: number } } }).properties.names.maxItems).toBe(0);
   });

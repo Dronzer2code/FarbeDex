@@ -14,6 +14,7 @@ import { getDb } from '../src/db/db';
 import { releaseNamer } from '../src/namer/llama';
 import { isNamerBusy } from '../src/namer/namer';
 import { useGate } from '../src/store/gate';
+import { playSound } from '../src/ui/sounds';
 import { ToastHost } from '../src/ui/toast';
 import { color, fontFamily } from '../src/ui/tokens';
 
@@ -46,7 +47,9 @@ export default function RootLayout() {
 
   const ready = (fontsLoaded || fontError) && (dbReady || dbError);
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync().catch(() => {});
+    if (!ready) return;
+    SplashScreen.hideAsync().catch(() => {});
+    playSound('open');
   }, [ready]);
 
   if (!ready) return null;

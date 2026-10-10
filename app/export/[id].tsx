@@ -1,53 +1,77 @@
-// Export palette — docs/UI_DESIGN.md → Export; docs/PROCESS_FLOW.md → J5.
+// Export palette — docs/UI_DESIGN.md → Export; docs/PROCESS_FLOW.md → J5. Image tab: shareable palette card.
 import * as Clipboard from 'expo-clipboard';
 import { File, Paths } from 'expo-file-system';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type Svg from 'react-native-svg';
 
+import { paletteMood } from '../../src/color/mood';
 import { getCatch } from '../../src/db/catchRepo';
 import { getAllEntries } from '../../src/db/entryRepo';
 import { contrastPairs, toContrastText, toCss, toTailwind, toTokens, type ExportSwatch } from '../../src/export/formats';
+import { savePngToDevice, sharePng, svgToPngBase64 } from '../../src/export/saveImage';
 import { useDbQuery } from '../../src/store/data';
 import { Chip } from '../../src/ui/Chip';
 import { Button } from '../../src/ui/controls';
-import { displayName } from '../../src/ui/format';
+import { displayName, formatDay } from '../../src/ui/format';
 import { CloseIcon } from '../../src/ui/icons';
+import { PaletteCard, type CardColour } from '../../src/ui/PaletteCard';
 import { showToast } from '../../src/ui/toast';
-import { color, fontFamily, radius, space, type } from '../../src/ui/tokens';
+import { color, fontFamily, radius, shadow, space, type } from '../../src/ui/tokens';
 
-type Tab = 'CSS' | 'Tailwind' | 'Tokens' | 'Contrast';
-const TABS: Tab[] = ['CSS', 'Tailwind', 'Tokens', 'Contrast'];
-const EXT: Record<Tab, string> = { CSS: 'css', Tailwind: 'js', Tokens: 'json', Contrast: 'txt' };
+type Tab = 'Image' | 'CSS' | 'Tailwind' | 'Tokens' | 'Contrast';
+const TABS: Tab[] = ['Image', 'CSS', 'Tailwind', 'Tokens', 'Contrast'];
+const EXT: Record<Exclude<Tab, 'Image'>, string> = { CSS: 'css', Tailwind: 'js', Tokens: 'json', Contrast: 'txt' };
 const GRADE_COLOR = { AA: color.success, 'AA-large': color.warning, Fail: color.danger } as const;
 
 export default function ExportScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [tab, setTab] = useState<Tab>('CSS');
+  const [tab, setTab] = useState<Tab>('Image');
+  const [busy, setBusy] = useState(false);
+  const cardRef = useRef<Svg>(null);
   const { data } = useDbQuery(
     async (db) => {
       const c = await getCatch(db, id);
       const names = new Map((await getAllEntries(db)).map((e) => [e.no, e.name]));
       const sw: ExportSwatch[] = (c?.swatches ?? []).map((s) => ({ no: s.entry_no, name: displayName(s.entry_no, names.get(s.entry_no)), hex: s.hex, pct: s.pct }));
-      return sw;
+      const card: CardColour[] = (c?.swatches ?? []).map((s) => ({ hex: s.hex, l: s.ok_l, no: s.entry_no }));
+      const mood = paletteMood((c?.swatches ?? []).map((s) => ({ l: s.ok_l, c: s.ok_c, h: s.ok_h, pct: s.pct })));
+      const caption = c ? [c.catch.subject_label, formatDay(c.catch.created_at)].filter(Boolean).join(' · ') : '';
+      return { sw, card, title: c?.catch.title ?? mood, caption };
     },
     [id],
   );
-  const sw = data ?? [];
-  const text = tab === 'CSS' ? toCss(sw) : tab === 'Tailwind' ? toTailwind(sw) : tab === 'Tokens' ? toTokens(sw) : toContrastText(sw);
+  const sw = data?.sw ?? [];
+  const text =
+    tab === 'CSS' ? toCss(sw) : tab === 'Tailwind' ? toTailwind(sw) : tab === 'Tokens' ? toTokens(sw) : tab === 'Contrast' ? toContrastText(sw) : '';
 
   const copy = async () => {
     await Clipboard.setStringAsync(text);
     showToast('Copied');
   };
-  const share = async () => {
+  const shareText = async () => {
+    if (tab === 'Image') return;
     const f = new File(Paths.cache, `farbedex-palette.${EXT[tab]}`);
     if (f.exists) f.delete();
     f.create();
     f.write(text);
     if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(f.uri, { mimeType: 'text/plain', dialogTitle: 'Export palette' });
+  };
+  const withImage = async (action: (b64: string) => Promise<unknown>, done?: string) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await action(await svgToPngBase64(cardRef.current));
+      if (done) showToast(done);
+    } catch (e) {
+      const cancelled = /cancel/i.test(String(e));
+      if (!cancelled) showToast('Could not create the image. Try again.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -60,13 +84,20 @@ export default function ExportScreen() {
           <CloseIcon color={color.ink} />
         </Pressable>
       </View>
-      <View style={styles.tabs}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
         {TABS.map((t) => (
           <Chip key={t} label={t} selected={tab === t} onPress={() => setTab(t)} />
         ))}
-      </View>
+      </ScrollView>
 
-      {tab === 'Contrast' ? (
+      {tab === 'Image' ? (
+        <ScrollView contentContainerStyle={styles.imageWrap}>
+          <View style={styles.cardFrame} accessible accessibilityLabel={`Palette image: ${data?.title ?? ''}`}>
+            {data ? <PaletteCard ref={cardRef} colours={data.card} title={data.title} caption={data.caption} /> : null}
+          </View>
+          <Text style={styles.help}>Save to device asks for a folder the first time (for example Downloads).</Text>
+        </ScrollView>
+      ) : tab === 'Contrast' ? (
         <ScrollView contentContainerStyle={styles.pairs}>
           {contrastPairs(sw).map((p) => (
             <View key={`${p.a.no}-${p.b.no}`} style={styles.pair} accessible accessibilityLabel={`${p.a.name} on ${p.b.name}, ${p.ratio.toFixed(2)} to 1, ${p.grade}`}>
@@ -97,12 +128,25 @@ export default function ExportScreen() {
       )}
 
       <View style={styles.actions}>
-        <View style={{ flex: 1 }}>
-          <Button label="Share" variant="secondary" onPress={share} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Button label="Copy" onPress={copy} />
-        </View>
+        {tab === 'Image' ? (
+          <>
+            <View style={{ flex: 1 }}>
+              <Button label="Save to device" variant="secondary" disabled={busy || !data} onPress={() => withImage(savePngToDevice, 'Saved')} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button label="Share image" disabled={busy || !data} onPress={() => withImage(sharePng)} />
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={{ flex: 1 }}>
+              <Button label="Share" variant="secondary" onPress={shareText} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button label="Copy" onPress={copy} />
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -113,7 +157,10 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space[4], paddingTop: space[2] },
   title: { ...type.title, color: color.ink },
   close: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
-  tabs: { flexDirection: 'row', gap: space[2], paddingHorizontal: space[4], paddingVertical: space[3], flexWrap: 'wrap' },
+  tabs: { flexDirection: 'row', gap: space[2], paddingHorizontal: space[4], paddingVertical: space[3] },
+  imageWrap: { paddingHorizontal: space[4], gap: space[3], alignItems: 'center' },
+  cardFrame: { width: '100%', aspectRatio: 360 / 450, borderRadius: radius.md, overflow: 'hidden', backgroundColor: '#FFFFFF', ...shadow.card },
+  help: { fontSize: 12, fontFamily: fontFamily.ui400, color: color.inkSoft, textAlign: 'center' },
   codeWrap: { flex: 1, marginHorizontal: space[4], backgroundColor: color.ink, borderRadius: radius.md },
   code: { fontFamily: fontFamily.mono500, fontSize: 13, lineHeight: 20, color: '#F6F6F8' },
   pairs: { paddingHorizontal: space[4], gap: space[2] },

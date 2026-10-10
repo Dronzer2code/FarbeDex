@@ -2,7 +2,7 @@
 // Queued per Catch; lazy model load; JSON-constrained completion; validate; retry once; template fallback.
 import { create } from 'zustand';
 
-import { getCatch, setCatchNote } from '../db/catchRepo';
+import { getCatch, setCatchNote, setCatchTitle } from '../db/catchRepo';
 import { getDb } from '../db/db';
 import { allNames, getAllEntries, setEntryName } from '../db/entryRepo';
 import { SettingKey, getSetting } from '../db/settingsRepo';
@@ -14,7 +14,7 @@ import { bumpData } from '../store/data';
 import { showToast } from '../ui/toast';
 import { getNamerContext } from './llama';
 import { buildMessages, buildSchema, parseNamerJson, type NamerRequest, type NewColour } from './prompt';
-import { composeName, validateNote } from './validate';
+import { composeName, validateNote, validateTitle } from './validate';
 
 export const NAMER_TIMEOUT_MS = 12_000;
 
@@ -140,6 +140,7 @@ async function nameCatch(catchId: string): Promise<void> {
 
   const accepted = new Map<number, string>();
   let note: string | null = null;
+  let title: string | null = null;
   const genMs: number[] = [];
   let loadMs = 0;
   try {
@@ -155,7 +156,10 @@ async function nameCatch(catchId: string): Promise<void> {
       const { text, ms } = await complete(req, pending.map((p) => p.no));
       genMs.push(ms);
       const json = parseNamerJson(text);
-      if (attempt === 0) note = validateNote(json?.note);
+      if (attempt === 0) {
+        note = validateNote(json?.note);
+        title = validateTitle(json?.title);
+      }
       const reasons: string[] = [];
       const stillPending: NewColour[] = [];
       for (const p of pending) {
@@ -184,6 +188,7 @@ async function nameCatch(catchId: string): Promise<void> {
   for (const [no, name] of accepted) await setEntryName(db, no, name, 'GEMMA');
   await writeTemplates(targets.map((t) => t.entry_no).filter((no) => !accepted.has(no)));
   if (note) await setCatchNote(db, catchId, note);
+  if (title) await setCatchTitle(db, catchId, title);
 
   useNamerStatus.setState({
     last: {

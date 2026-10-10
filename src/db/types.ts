@@ -40,6 +40,7 @@ export interface CatchRow {
   note: string | null;
   live_checks: string;
   minority: string | null; // JSON MinoritySwatch[]
+  title: string | null; // palette mood title (Namer)
 }
 
 export interface SwatchRow {

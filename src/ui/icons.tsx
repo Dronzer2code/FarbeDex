@@ -74,3 +74,11 @@ export function ChevronIcon({ size = 24, color = '#17171C', direction = 'right' 
     </Svg>
   );
 }
+
+export function FlashIcon({ size = 24, color = '#FFFFFF', on = false }: IconProps & { on?: boolean }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill={on ? color : 'none'} stroke={color} strokeWidth={1.8} strokeLinejoin="round">
+      <Path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z" />
+    </Svg>
+  );
+}

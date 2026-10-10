@@ -7,6 +7,7 @@ export const SettingKey = {
   namerDisabled: 'dev_namer_disabled',
   namesRepairedV2: 'names_repaired_v2',
   facesEnabled: 'faces_enabled',
+  soundsEnabled: 'sounds_enabled',
 } as const;
 
 export async function getSetting(key: string): Promise<string | null> {

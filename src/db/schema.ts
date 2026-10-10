@@ -44,6 +44,8 @@ export const MIGRATIONS: readonly string[] = [
   `,
   // v2: minority colours (JSON MinoritySwatch[]), shown on the Photo Overview but never counted.
   `ALTER TABLE catches ADD COLUMN minority TEXT;`,
+  // v3: palette mood title from the Namer (nullable; the app falls back to paletteMood()).
+  `ALTER TABLE catches ADD COLUMN title TEXT;`,
 ];
 
 export const ENTRY_COUNT = 151;

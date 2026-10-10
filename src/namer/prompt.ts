@@ -28,7 +28,8 @@ const RULES =
   'Rules: for each new colour write "word": one or two evocative words about the subject or the place (for example "Rooftop Morning", "Wet Moss"). ' +
   'Do NOT use colour or brightness words (dark, light, pale, deep, bright, blue, grey, black, white, charcoal...): the app adds the colour name after your words. ' +
   'Title Case, no brand names, no numbers.\n' +
-  'Then write "note": one sentence, at most 25 words, on how to use this palette in a user interface.';
+  'Then write "note": one sentence, at most 25 words, on how to use this palette in a user interface.\n' +
+  'Then write "title": ONE word for the mood of the whole palette, for example COOL, WARM, EARTHY, SERENE, FRESH.';
 
 export function userMessage(r: NamerRequest): string {
   const lines = [
@@ -68,6 +69,7 @@ const FEW_SHOT: ChatMessage[] = [
         { no: 4, word: 'Old Wall' },
       ],
       note: 'Use the stone grey as the page background and the moss green for primary buttons and links.',
+      title: 'EARTHY',
     }),
   },
   {
@@ -88,6 +90,7 @@ const FEW_SHOT: ChatMessage[] = [
     content: JSON.stringify({
       names: [{ no: 40, word: 'Late Ember' }],
       note: 'Keep the pale peach for cards, the dusk violet for headings, and the ember orange only for alerts.',
+      title: 'WARM',
     }),
   },
 ];
@@ -116,14 +119,19 @@ export function buildSchema(nos: number[]): object {
         };
   return {
     type: 'object',
-    properties: { names, note: { type: 'string', minLength: 10, maxLength: 220 } },
-    required: ['names', 'note'],
+    properties: {
+      names,
+      note: { type: 'string', minLength: 10, maxLength: 220 },
+      title: { type: 'string', minLength: 3, maxLength: 12 },
+    },
+    required: ['names', 'note', 'title'],
   };
 }
 
 export interface NamerJson {
   names: { no: number; word?: string; name?: string }[];
   note: string;
+  title: string;
 }
 
 export function parseNamerJson(text: string): NamerJson | null {
@@ -133,7 +141,7 @@ export function parseNamerJson(text: string): NamerJson | null {
     if (start < 0 || end < start) return null;
     const j = JSON.parse(text.slice(start, end + 1));
     if (!j || !Array.isArray(j.names)) return null;
-    return { names: j.names.filter((n: unknown) => n && typeof n === 'object'), note: typeof j.note === 'string' ? j.note : '' };
+    return { names: j.names.filter((n: unknown) => n && typeof n === 'object'), note: typeof j.note === 'string' ? j.note : '', title: typeof j.title === 'string' ? j.title : '' };
   } catch {
     return null;
   }

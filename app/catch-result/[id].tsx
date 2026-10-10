@@ -17,6 +17,7 @@ import { RarityChip } from '../../src/ui/Chip';
 import { Button } from '../../src/ui/controls';
 import { DistributionStrip, MinorityColours, NewPill } from '../../src/ui/data';
 import { displayName, entryCode } from '../../src/ui/format';
+import { playSound } from '../../src/ui/sounds';
 import { Specimen } from '../../src/ui/Specimen';
 import { color, fontFamily, radius, shadow, space, type } from '../../src/ui/tokens';
 
@@ -104,11 +105,17 @@ export default function CatchResult() {
   );
 
   const rareNew = !!data?.c?.swatches.some((s) => s.is_new === 1 && ['LEGENDARY', 'MYTHICAL'].includes(ENTRIES[s.entry_no - 1].rarity));
+  const anyNew = !!data?.c?.swatches.some((s) => s.is_new === 1);
+  const loaded = !!data?.c;
+  // Reveal sound: rare/legendary/mythical > new colour > "level up" (all colours seen before).
   useEffect(() => {
-    if (!rareNew) return;
-    const t = setTimeout(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}), 900);
+    if (!loaded) return;
+    const t = setTimeout(() => {
+      if (rareNew) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      playSound(rareNew ? 'rare' : anyNew ? 'new' : 'levelup');
+    }, 900);
     return () => clearTimeout(t);
-  }, [rareNew]);
+  }, [loaded, rareNew, anyNew]);
 
   if (!data) return <View style={styles.root} />;
   if (!data.c) {

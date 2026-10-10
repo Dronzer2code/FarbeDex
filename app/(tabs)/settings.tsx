@@ -50,6 +50,8 @@ export default function Settings() {
   const refreshModels = useGate((s) => s.refreshModels);
   const facesEnabled = usePrefs((p) => p.facesEnabled);
   const setFacesEnabled = usePrefs((p) => p.setFacesEnabled);
+  const soundsEnabled = usePrefs((p) => p.soundsEnabled);
+  const setSoundsEnabled = usePrefs((p) => p.setSoundsEnabled);
   const { data: storage, reload } = useDbQuery(async () => ({ catches: dirSize('catches') + dirSize('thumbs'), models: dirSize('models') }), []);
 
   const deleteAll = async () => {
@@ -86,6 +88,10 @@ export default function Settings() {
         <View style={styles.row}>
           <Text style={styles.rowLabel}>Faces on colours</Text>
           <Switch value={facesEnabled} onValueChange={setFacesEnabled} accessibilityLabel="Faces on colours" />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.rowLabel}>Sounds</Text>
+          <Switch value={soundsEnabled} onValueChange={setSoundsEnabled} accessibilityLabel="Sounds" />
         </View>
       </View>
 

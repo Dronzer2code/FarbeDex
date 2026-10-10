@@ -103,6 +103,10 @@ export async function setCatchNote(db: DbLike, id: string, note: string | null):
   await db.runAsync('UPDATE catches SET note = ? WHERE id = ?', note, id);
 }
 
+export async function setCatchTitle(db: DbLike, id: string, title: string | null): Promise<void> {
+  await db.runAsync('UPDATE catches SET title = ? WHERE id = ?', title, id);
+}
+
 export async function getCatch(db: DbLike, id: string): Promise<{ catch: CatchRow; swatches: SwatchRow[] } | null> {
   const c = await db.getFirstAsync<CatchRow>('SELECT * FROM catches WHERE id = ?', id);
   if (!c) return null;

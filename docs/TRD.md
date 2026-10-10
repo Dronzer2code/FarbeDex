@@ -28,6 +28,7 @@ Features and concepts: `docs/PRD.md`. Colour algorithms and thresholds: `docs/DE
 | Namer model runtime | `llama.rn` (llama.cpp binding) | VERIFY-4 |
 | State | `zustand` | UI state; data via repositories |
 | UI | `react-native-reanimated`, `react-native-gesture-handler`, `react-native-svg`, `expo-haptics`, `expo-clipboard`, `expo-sharing`, `expo-image` | |
+| Sound | `expo-audio` (playback only; plugin: no microphone, no background) | Added 2026-10-10; loaded lazily so older dev builds stay silent instead of crashing |
 | Fonts | `@expo-google-fonts/poppins`, `@expo-google-fonts/jetbrains-mono` | OFL licensed |
 | Tests | `jest`, `jest-expo` | Pure-logic tests |
 
@@ -278,6 +279,7 @@ Errors at any step: show "Something went wrong. Try again." and delete files; ne
 - Tokens JSON (W3C design tokens draft format): `{ "farbe": { "1": { "$type": "color", "$value": "#...", "$description": "..." } } }`.
 - Contrast table: every Swatch pair's WCAG 2.x contrast ratio, marking AA (≥ 4.5) and AA-large (≥ 3).
 - Copy via `expo-clipboard`; share as text via `expo-sharing` (text file in cache).
+- Palette image: `src/ui/PaletteCard.tsx` (SVG) → `Svg.toDataURL` (react-native-svg, 1080×1350 PNG) → share (`expo-sharing`, image/png) or save into a folder the user picks once (`Directory.pickDirectoryAsync`, SAF; URI remembered in `settings.export_dir_uri`). Title = Namer `title` (catches.title, schema v3) or `src/color/mood.ts` → `paletteMood()`.
 
 ## NAVIGATION
 

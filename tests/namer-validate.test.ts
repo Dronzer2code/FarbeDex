@@ -1,5 +1,5 @@
 import { findBlocked } from '../src/namer/blocklist';
-import { composeName, toTitleCase, validateName, validateNote } from '../src/namer/validate';
+import { composeName, toTitleCase, validateName, validateNote, validateTitle } from '../src/namer/validate';
 
 const opts = { usedNames: ['Moss Velvet'], templateName: 'Dusty Green' };
 
@@ -60,5 +60,19 @@ describe('composeName (Gemma words + true colour word)', () => {
     expect(composeName('One Two Three', 'Blue', o)).toMatchObject({ ok: false, reason: 'WORDS' });
     expect(composeName('', 'Blue', o)).toMatchObject({ ok: false, reason: 'FORMAT' });
     expect(composeName('Moss', 'Velvet', o)).toMatchObject({ ok: false, reason: 'DUPLICATE' });
+  });
+});
+
+describe('palette title', () => {
+  it('accepts one plain word and uppercases it', () => {
+    expect(validateTitle('serene')).toBe('SERENE');
+    expect(validateTitle('COOL')).toBe('COOL');
+  });
+  it('rejects multi-word, numbers, too long and blocked words', () => {
+    expect(validateTitle('very cool')).toBeNull();
+    expect(validateTitle('cool2')).toBeNull();
+    expect(validateTitle('Extraordinarily')).toBeNull();
+    expect(validateTitle('Pantone')).toBeNull();
+    expect(validateTitle(undefined)).toBeNull();
   });
 });

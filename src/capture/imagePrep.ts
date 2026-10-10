@@ -1,5 +1,5 @@
 // Image preparation — docs/TRD.md → CATCH PIPELINE step 2; docs/DEX_SPEC.md step 1.
-// Writes catches/<id>.jpg (≤ 2048 px, JPEG 0.85) and thumbs/<id>.jpg (480 px), and decodes two analysis
+// Writes catches/<id>.jpg (≤ 4096 px, JPEG 0.92) and thumbs/<id>.jpg (480 px), and decodes two analysis
 // images: 160 px longest side (extraction) and 256 px shortest side (Referee).
 import { Directory, File, Paths } from 'expo-file-system';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
@@ -56,7 +56,8 @@ export async function prepareImages(id: string, photoUri: string, width: number,
   ensureDir(catchesDir());
   ensureDir(thumbsDir());
 
-  const full = await renderJpeg(photoUri, width, height, 2048, 'longest', 0.85);
+  // Keep up to 4096 px at high quality (max-capability capture); analysis images stay small.
+  const full = await renderJpeg(photoUri, width, height, 4096, 'longest', 0.92);
   const photo = new File(catchesDir(), `${id}.jpg`);
   await new File(full.uri).move(photo);
 

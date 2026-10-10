@@ -113,6 +113,10 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Colours below the palette cut are shown as "Minority colours" (never counted) instead of a grey "Other"; `catches.minority` (schema v2) | Team: colours that did not make the palette should be visible as minority, not lost |
 | 2026-10-10 | Gemma writes only 1–2 evocative words; the app appends the Entry's colour word; colour words banned in Gemma's part; mismatched stored names repaired once | Team: a Mythical blue (#115) was named "Dark Charcoal" |
 | 2026-10-10 | Cozy faces on caught Specimens, deterministic per Entry (age × gender cues), toggle in Settings (default on); missing Entries stay faceless | Team request; kept original/generic to respect the IP rule; rendered and reviewed on laptop |
+| 2026-10-10 | Palette image card + Share image + Save to device (SAF folder, no media-library); Gemma adds a one-word `title` in the same call, fallback `paletteMood()` | Team request; keeps camera-only/no-gallery rule |
+| 2026-10-10 | Camera: flashlight toggle, largest picture size, quality 1.0, stored photo ≤ 4096 px JPEG 0.92 | Team request (max capability) |
+| 2026-10-10 | Original generated 8-bit sounds via expo-audio (playback-only plugin config); team-supplied game MP3s git-ignored and not used | Team request for game sounds declined on IP grounds (CLAUDE.md HARD RULES); originals cover the same moments (open, catch, shiny→new, legendary→rare, level up) |
+| 2026-10-10 | Home "field device" header: shell = latest catch colour, lens of recent colours, inset readout | Team request for a cooler collector-device dashboard; avoids franchise trade dress |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)

@@ -10,10 +10,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { runCapture, type CaptureOutcome } from '../src/capture/capture';
 import { MOTION_MIN, REJECT_COPY, type RejectReason } from '../src/capture/liveChecks';
 import { MotionBuffer } from '../src/capture/motion';
+import { pickLargestPictureSize } from '../src/capture/pictureSize';
 import { motionStd } from '../src/capture/motionMath';
 import { warmReferee } from '../src/referee/referee';
 import { Button, Sheet } from '../src/ui/controls';
-import { CloseIcon } from '../src/ui/icons';
+import { CloseIcon, FlashIcon } from '../src/ui/icons';
+import { playSound } from '../src/ui/sounds';
 import { color, fontFamily, radius, space, type } from '../src/ui/tokens';
 
 type Phase = { kind: 'framing' } | { kind: 'processing'; step: 'scene' | 'colours' } | { kind: 'rejected'; reason: RejectReason };
@@ -25,6 +27,21 @@ export default function CatchScreen() {
   const cancelled = useRef(false);
   const [phase, setPhase] = useState<Phase>({ kind: 'framing' });
   const [ready, setReady] = useState(false);
+  const [torch, setTorch] = useState(false);
+  const [pictureSize, setPictureSize] = useState<string | undefined>(undefined);
+  const sizeQueried = useRef(false);
+
+  const onCameraReady = async () => {
+    setReady(true);
+    if (sizeQueried.current || !cameraRef.current) return;
+    sizeQueried.current = true;
+    try {
+      // Max capability: the largest still size the device offers.
+      setPictureSize(pickLargestPictureSize(await cameraRef.current.getAvailablePictureSizesAsync()));
+    } catch {
+      // keep the camera default
+    }
+  };
   const [liveStd, setLiveStd] = useState<number | null>(null);
   const [lastDev, setLastDev] = useState<string | null>(null);
 
@@ -63,6 +80,7 @@ export default function CatchScreen() {
   const shutter = async () => {
     if (phase.kind !== 'framing' || !ready || !cameraRef.current) return;
     Haptics.selectionAsync().catch(() => {});
+    playSound('shutter');
     // Motion window = the 800 ms before the shutter press.
     const snapshot = motion.current.snapshot(800);
     const sensorAvailable = motion.current.available === true;
@@ -70,7 +88,7 @@ export default function CatchScreen() {
     setPhase({ kind: 'processing', step: 'scene' });
     let outcome: CaptureOutcome;
     try {
-      const photo = await cameraRef.current.takePictureAsync({ quality: 0.85, exif: false, shutterSound: false });
+      const photo = await cameraRef.current.takePictureAsync({ quality: 1, exif: false, shutterSound: false });
       outcome = await runCapture({
         photoUri: photo.uri,
         width: photo.width,
@@ -95,9 +113,11 @@ export default function CatchScreen() {
     }
     if (outcome.kind === 'accepted') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      playSound('catch');
       router.replace(`/catch-result/${outcome.id}`);
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+      playSound('reject');
       setPhase({ kind: 'rejected', reason: outcome.reason });
     }
   };
@@ -106,7 +126,16 @@ export default function CatchScreen() {
 
   return (
     <View style={styles.root}>
-      <CameraView ref={cameraRef} style={StyleSheet.absoluteFill} facing="back" mode="picture" onCameraReady={() => setReady(true)} animateShutter />
+      <CameraView
+        ref={cameraRef}
+        style={StyleSheet.absoluteFill}
+        facing="back"
+        mode="picture"
+        pictureSize={pictureSize}
+        enableTorch={torch}
+        onCameraReady={onCameraReady}
+        animateShutter
+      />
 
       {/* corner frame guides */}
       <View style={styles.guides} pointerEvents="none">
@@ -124,7 +153,15 @@ export default function CatchScreen() {
           <View style={styles.chip}>
             <Text style={styles.chipText}>Outdoors only</Text>
           </View>
-          <View style={{ width: 48 }} />
+          <Pressable
+            accessibilityRole="switch"
+            accessibilityState={{ checked: torch }}
+            accessibilityLabel="Flashlight"
+            onPress={() => setTorch((t) => !t)}
+            style={[styles.close, torch && styles.torchOn]}
+          >
+            <FlashIcon on={torch} color={torch ? '#17171C' : '#FFFFFF'} />
+          </Pressable>
         </View>
 
         {__DEV__ ? (
@@ -167,6 +204,7 @@ const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFill, justifyContent: 'space-between' },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space[2] },
   close: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  torchOn: { backgroundColor: '#FFE27A', borderRadius: 24 },
   chip: { backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 6 },
   chipText: { color: '#FFFFFF', fontFamily: fontFamily.ui500, fontSize: 13 },
   dev: { color: '#9FF29F', fontFamily: fontFamily.mono500, fontSize: 11, paddingHorizontal: space[3], backgroundColor: 'rgba(0,0,0,0.4)' },

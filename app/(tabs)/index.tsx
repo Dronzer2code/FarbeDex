@@ -3,7 +3,6 @@ import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { listCatches } from '../../src/db/catchRepo';
 import { getAllEntries } from '../../src/db/entryRepo';
@@ -17,7 +16,10 @@ import { FamilyChip, RarityChip } from '../../src/ui/Chip';
 import { Button } from '../../src/ui/controls';
 import { DistributionStrip } from '../../src/ui/data';
 import { displayName } from '../../src/ui/format';
+import { FieldDevice } from '../../src/ui/FieldDevice';
 import { Specimen } from '../../src/ui/Specimen';
+import { getModelFile } from '../../src/models/manifest';
+import { modelState } from '../../src/models/status';
 import { color, fontFamily, radius, shadow, space, type } from '../../src/ui/tokens';
 
 const TILE_TINTS = ['#E4EEDB', '#E3ECF7', '#F6E9DC', '#EEE4F5'];
@@ -52,11 +54,22 @@ export default function Home() {
   const missing = useMemo(() => ENTRIES.filter((e) => (states.get(e.no)?.timesCaught ?? 0) === 0).map((e) => e.no), [states]);
   const huntNo = data ? todaysHunt(missing, new Date()) : null;
   const hunt = huntNo ? ENTRIES[huntNo - 1] : null;
+  const recentHexes = (data?.catches ?? []).slice(0, 3).map((c) => c.strip[0]?.hex).filter((h): h is string => !!h);
+  const startOfToday = new Date().setHours(0, 0, 0, 0);
+  const catchesToday = (data?.catches ?? []).filter((c) => c.created_at >= startOfToday).length;
   const results = query.trim() ? filterEntries(ENTRIES, states, { ...NO_FILTER, query }).slice(0, 8) : [];
 
   return (
-    <SafeAreaView style={styles.root} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <View style={styles.root}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 }} keyboardShouldPersistTaps="handled">
+        <FieldDevice
+          caught={caught}
+          catchesToday={catchesToday}
+          recentHexes={recentHexes}
+          refereeReady={modelState(getModelFile('referee')) === 'ready'}
+          namerReady={modelState(getModelFile('namer')) === 'ready'}
+        />
+        <View style={styles.content}>
         <Text style={styles.heading} accessibilityRole="header">
           What colour are you{'\n'}hunting today?
         </Text>
@@ -90,10 +103,6 @@ export default function Home() {
           <Tile label="Album" value={`${data?.catches.length ?? 0} catches`} tint={TILE_TINTS[1]} onPress={() => router.push('/album')} />
           <Tile label="Field Notes" tint={TILE_TINTS[2]} onPress={() => router.push('/field-notes')} />
           <Tile label="Rarity Guide" tint={TILE_TINTS[3]} onPress={() => router.push('/rarity')} />
-        </View>
-
-        <View style={styles.progressTrack} accessibilityLabel={`${caught} of 151 entries caught`}>
-          <View style={[styles.progressFill, { width: `${(caught / 151) * 100}%` }]} />
         </View>
 
         {hunt ? (
@@ -146,15 +155,16 @@ export default function Home() {
             </Link>
           </View>
         ) : null}
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: color.bg },
-  content: { padding: space[4], gap: space[4], paddingBottom: 120 },
-  heading: { ...type.display, color: color.ink },
+  content: { paddingHorizontal: space[4], gap: space[4] },
+  heading: { ...type.title, color: color.ink },
   search: {
     backgroundColor: color.surfaceSunken,
     borderRadius: radius.pill,

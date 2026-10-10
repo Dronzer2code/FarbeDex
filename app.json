@@ -24,6 +24,9 @@
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.ACTIVITY_RECOGNITION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.READ_MEDIA_IMAGES",
@@ -52,8 +55,12 @@
       [
         "expo-sharing",
         {
-          "android": { "enabled": false },
-          "ios": { "enabled": false }
+          "android": {
+            "enabled": false
+          },
+          "ios": {
+            "enabled": false
+          }
         }
       ],
       [
@@ -81,7 +88,16 @@
           "enableOpenCLAndHexagon": false
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": false

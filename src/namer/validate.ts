@@ -65,6 +65,15 @@ export function composeName(
   return validateName(`${word} ${colourWord}`, opts);
 }
 
+/** Palette mood title: one word, letters only, 3–12 chars, not blocked → UPPERCASE; else null. */
+export function validateTitle(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  const t = raw.trim();
+  if (!/^[A-Za-z]{3,12}$/.test(t)) return null;
+  if (findBlocked(t)) return null;
+  return t.toUpperCase();
+}
+
 /** Design note: ≤ 25 words, a sentence of interface advice, no URLs/numbers-as-facts, no blocked words. */
 export function validateNote(raw: unknown): string | null {
   if (typeof raw !== 'string') return null;
