@@ -75,6 +75,7 @@ export default function RootLayout() {
           <Stack.Screen name="rarity" />
           <Stack.Screen name="field-notes" />
           <Stack.Screen name="licenses" />
+          <Stack.Screen name="export/[id]" options={{ presentation: 'modal' }} />
           <Stack.Screen name="dev/ai-spike" options={{ headerShown: true, title: 'AI spike (dev)' }} />
           <Stack.Screen name="dev/ui" options={{ headerShown: true, title: 'UI kit (dev)' }} />
         </Stack>

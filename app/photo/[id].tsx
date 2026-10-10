@@ -111,6 +111,8 @@ export default function PhotoOverview() {
               <Text style={styles.noteText}>{c.note}</Text>
             </View>
           ) : null}
+
+          <Button label="Export palette" onPress={() => router.push(`/export/${c.id}`)} />
         </View>
       </ScrollView>
 

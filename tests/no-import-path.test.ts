@@ -29,6 +29,14 @@ describe('no import path', () => {
     expect(expo.platforms).toEqual(['android']);
   });
 
+  it('expo-sharing is send-only (no share-intent receiver)', () => {
+    const { expo } = readJson('app.json');
+    const entry = (expo.plugins as unknown[]).find((p) => (Array.isArray(p) ? p[0] : p) === 'expo-sharing');
+    const opts = Array.isArray(entry) ? entry[1] : {};
+    expect(opts?.android?.enabled ?? false).toBe(false);
+    expect(opts?.ios?.enabled ?? false).toBe(false);
+  });
+
   it('no source file imports a forbidden package', () => {
     const files = execSync('git ls-files --cached --others --exclude-standard -- app src', { cwd: root })
       .toString()

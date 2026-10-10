@@ -49,7 +49,13 @@
       "expo-sqlite",
       "expo-font",
       "expo-image",
-      "expo-sharing",
+      [
+        "expo-sharing",
+        {
+          "android": { "enabled": false },
+          "ios": { "enabled": false }
+        }
+      ],
       [
         "expo-splash-screen",
         {

@@ -44,7 +44,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T10 | A | Namer: prompt, llama.rn JSON-constrained call, validation, retry, templates, note; live update of result screen | T1, T7 | 3 h | AC-F6.1, AC-F10.1, AC-F10.2; CP3 | DOING (Namer queue, prompt + few-shots, JSON schema with pinned Entry numbers, validation, retry, template fallback, 12 s timeout, dev disable toggle, live name updates built; tests pass; on-phone naming quality + latency pending) |
 | T11 | B | Home (tiles, completion, Today's hunt, recent), Settings (models, storage, delete all, licenses), Rarity Guide | T8 | 2 h | Visible behaviour per `docs/UI_DESIGN.md` | DOING (Home, Settings, Rarity Guide, Licenses, Field Notes shell built; on-phone check pending) |
 | T12 | both | Airplane-mode pass of all MUST criteria; performance budgets measured; first outdoor field test (daylight) | T5–T11 | 2 h | AC-G.2; CP4 | TODO |
-| T13 | B | SHOULD: Export (CSS/Tailwind/Tokens/Contrast), Found-in bar, Neighbors, search, rarity/family filters | T12 | ≤ 3 h | AC-F11.1 | TODO |
+| T13 | B | SHOULD: Export (CSS/Tailwind/Tokens/Contrast), Found-in bar, Neighbors, search, rarity/family filters | T12 | ≤ 3 h | AC-F11.1 | DONE (Export CSS/Tailwind/Tokens/Contrast with Copy + Share; export.test passes. Found-in, Neighbors, search, rarity/family filters were built in T8) |
 | T14 | A | SHOULD: Field Notes (verify each claim + source, set `verified`), design note polish, reveal animations, haptics | T12 | ≤ 2.5 h | Only verified cards shown | TODO |
 | T15 | both | Polish pass against `docs/UI_DESIGN.md`; README (what, APK link, setup, model sources/licenses, credits, "Commits after deadline"); release APK build + GitHub Release | T13, T14 | 2 h | AC-G.3; CP5 | TODO |
 | T16 | both | Field session + demo video (`docs/MVP.md` → DEMO SCENARIO) in daylight; collect numbers for the post | T15 (or latest build) | 2 h | Video + numbers saved in `docs/evidence/` | TODO |
@@ -104,6 +104,8 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Label score = best-matching prompt (max), scene prompts extended (TRD table updated) | Prompt-mean blurred outdoor labels; laptop check 3/6 → 5/6 outdoor accepted, 3/3 rejects kept |
 | 2026-10-10 | TinyCLIP-8M q8 (MIT) implemented as a switchable preset; `ACTIVE_REFEREE` stays MobileCLIP until the team decides | VERIFY-2 licence is a team decision |
 | 2026-10-10 | Dev-only: missing Referee model → captures accepted as `DEV_NO_REFEREE`; release: Referee failure → reject ERROR | Test the pipeline before models; never admit unverified Catches in release |
+| 2026-10-10 | Export formatters live in one file `src/export/formats.ts` (not css.ts/tailwind.ts/tokens.ts) | Small, shared helpers |
+| 2026-10-10 | `expo-sharing` plugin pinned to `android.enabled: false` / `ios.enabled: false` + test | Plugin can add a share-intent receiver; camera-only rule forbids it (default is already off) |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
