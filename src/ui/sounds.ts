@@ -5,7 +5,7 @@ import type { AudioPlayer } from 'expo-audio';
 
 import { usePrefs } from '../store/prefs';
 
-export type SoundName = 'open' | 'shutter' | 'catch' | 'new' | 'rare' | 'levelup' | 'reject';
+export type SoundName = 'open' | 'shutter' | 'catch' | 'new' | 'rare' | 'shiny' | 'levelup' | 'reject';
 
 const SOURCES: Record<SoundName, number> = {
   open: require('../../assets/sounds/open.wav'),
@@ -13,6 +13,7 @@ const SOURCES: Record<SoundName, number> = {
   catch: require('../../assets/sounds/catch.wav'),
   new: require('../../assets/sounds/new.wav'),
   rare: require('../../assets/sounds/rare.wav'),
+  shiny: require('../../assets/sounds/shiny.wav'),
   levelup: require('../../assets/sounds/levelup.wav'),
   reject: require('../../assets/sounds/reject.wav'),
 };

@@ -131,6 +131,12 @@ Performance target: steps 1–8 < 500 ms on the reference phone.
 
 ## CATCH COUNTING (applied when a Catch is committed)
 
+**Pick 2 favourites (team rule 2026-10-10):** a committed Catch stores its full palette but counts nothing. The user picks 2 favourite Swatches (1 if the palette has one colour); only those are *registered* (`swatches.registered = 1`) and counted below. Unpicked Swatches stay visible as "Also in this palette". If the user leaves without choosing (or the app closes), the 2 largest Swatches are registered automatically (on leaving the screen, and on next app start).
+
+**Shiny (team rule 2026-10-10):** each registered pick of a Rare, Legendary or Mythical Entry has a 1-in-400 chance to be Shiny (`swatches.shiny = 1`, `entries.shiny_count` = registered shiny Swatches, recomputed on delete). Shiny Entries show a gold rim and sparkles; Rare+ picks get a special reveal (light burst), Shiny picks a sparkle animation, banner and sound.
+
+The rules below apply to registered Swatches only.
+
 For each Swatch in the Catch (Swatches already exclude Other):
 
 - `timesCaught += 1` for its Entry (once per Catch per Entry).

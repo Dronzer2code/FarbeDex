@@ -44,7 +44,7 @@ export interface EntryCatchRef {
 export async function catchesForEntry(db: DbLike, no: number): Promise<EntryCatchRef[]> {
   return db.getAllAsync<EntryCatchRef>(
     `SELECT s.catch_id, c.created_at, c.thumb_path, s.pct, c.subject_label
-       FROM swatches s JOIN catches c ON c.id = s.catch_id WHERE s.entry_no = ? ORDER BY c.created_at DESC`,
+       FROM swatches s JOIN catches c ON c.id = s.catch_id WHERE s.entry_no = ? AND s.registered = 1 ORDER BY c.created_at DESC`,
     no,
   );
 }
@@ -56,7 +56,7 @@ export async function resetAllData(db: DbLike): Promise<void> {
     await tx.runAsync('DELETE FROM catches');
     await tx.runAsync(
       `UPDATE entries SET name = NULL, name_source = NULL, times_caught = 0, sum_pct = 0, first_caught_at = NULL,
-         first_catch_id = NULL, best_hex = NULL, best_distance = NULL, best_catch_id = NULL`,
+         first_catch_id = NULL, best_hex = NULL, best_distance = NULL, best_catch_id = NULL, shiny_count = 0`,
     );
   });
 }

@@ -17,6 +17,7 @@ export interface EntryCardProps {
   hex: string | null; // best sample
   timesCaught?: number;
   label?: string; // e.g. Neighbor kind
+  shiny?: boolean;
   compact?: boolean;
   onPress?: () => void;
 }
@@ -63,7 +64,7 @@ function MythicalBorder() {
   );
 }
 
-export const EntryCard = memo(function EntryCard({ entry, caught, name, hex, timesCaught, label, compact, onPress }: EntryCardProps) {
+export const EntryCard = memo(function EntryCard({ entry, caught, name, hex, timesCaught, label, compact, shiny, onPress }: EntryCardProps) {
   const h = compact ? 96 : 120;
   const bg = caught ? hex ?? entry.canonical.hex : color.silhouetteBg;
   const fg = caught ? onColor(bg) : color.ink;
@@ -80,18 +81,20 @@ export const EntryCard = memo(function EntryCard({ entry, caught, name, hex, tim
       <View style={styles.text}>
         {label ? <Text style={[styles.kind, { color: fg }]}>{label}</Text> : null}
         <Text style={[styles.name, { color: caught ? fg : color.inkSoft }]} numberOfLines={1}>
-          {caught ? name ?? entry.templateName : '???'}
+          {caught ? `${shiny ? '✦ ' : ''}${name ?? entry.templateName}` : '???'}
         </Text>
         <Text style={[styles.number, { color: caught ? fg : color.inkSoft, opacity: caught ? 0.8 : 1 }]}>{entry.code}</Text>
         {!compact ? (
           <View style={[styles.rarity, { backgroundColor: caught ? 'rgba(255,255,255,0.25)' : color.surface }]}>
             <RarityIcon rarity={entry.rarity} size={11} color={caught ? fg : undefined} />
-            <Text style={[styles.rarityText, { color: caught ? fg : color.ink }]}>{RARITY_LABEL[entry.rarity]}</Text>
+            <Text style={[styles.rarityText, { color: caught ? fg : color.ink }]} numberOfLines={1}>
+              {RARITY_LABEL[entry.rarity]}
+            </Text>
           </View>
         ) : null}
       </View>
       <View style={styles.specimen}>
-        <Specimen no={entry.no} hex={caught ? bg : undefined} missing={!caught} size={compact ? 44 : 56} />
+        <Specimen no={entry.no} hex={caught ? bg : undefined} missing={!caught} shiny={caught && shiny} size={compact ? 44 : 56} />
       </View>
     </View>
   );
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   kind: { fontSize: 10, fontFamily: fontFamily.ui500, letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.8 },
   name: { fontSize: 16, fontFamily: fontFamily.ui600 },
   number: { fontSize: 13, fontFamily: fontFamily.mono500 },
-  rarity: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 4, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3, marginTop: 6 },
-  rarityText: { fontSize: 11, fontFamily: fontFamily.ui500 },
+  rarity: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', maxWidth: '100%', flexShrink: 1, gap: 4, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3, marginTop: 6 },
+  rarityText: { fontSize: 10.5, fontFamily: fontFamily.ui500, flexShrink: 1 },
   specimen: { justifyContent: 'center' },
 });

@@ -139,6 +139,7 @@ Missing state: header `silhouetteBg`, missing Specimen, name "???", `#067`, chip
 Black full screen, live preview, corner frame guides, top bar: close (X) + chip "Outdoors only" + **flashlight toggle** (torch, team request 2026-10-10). Bottom: large white shutter ring (76 dp). No gallery button. Captures at the device's largest picture size, quality 1.0. Processing overlay: dimmed preview, centered progress ring, two-step text.
 
 ### Catch result (`/catch-result/[id]`)
+**Pick phase (team rule 2026-10-10):** "N colours found" + "Pick your 2 favourites…"; selectable Swatch cards (Specimen, name or "Not in your FarbeDex yet", `#no · hex · %`, rarity chip, check circle; max 2, a third tap replaces the oldest); buttons Top colours · Add 2 to FarbeDex. **Reveal phase:** picked cards flip in; Rare+ picks have a rotating ray burst in the rarity colour; Shiny picks a gold card, "✦ SHINY ✦" banner, twinkling sparkles and the `shiny` sound; other colours listed as "Also in this palette". Previous layout below is the reveal phase.
 - Top: thumbnail of the photo (radius `lg`) with its Distribution strip.
 - Headline: "5 colours caught" + accent line "2 new!".
 - Vertical list of cards per Swatch (Distribution order): Specimen 56, name, `#no`, %, rarity chip, NEW ribbon. New Entries play the reveal (silhouette → colour flip). Names shimmer until the Namer returns.

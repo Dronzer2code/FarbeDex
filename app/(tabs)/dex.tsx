@@ -25,8 +25,8 @@ export default function Dex() {
   const [picker, setPicker] = useState<'rarity' | 'family' | null>(null);
 
   const states = useMemo(() => {
-    const m = new Map<number, EntryState & { bestHex: string | null }>();
-    for (const r of rows ?? []) m.set(r.no, { timesCaught: r.times_caught, name: r.name, bestHex: r.best_hex });
+    const m = new Map<number, EntryState & { bestHex: string | null; shiny: boolean }>();
+    for (const r of rows ?? []) m.set(r.no, { timesCaught: r.times_caught, name: r.name, bestHex: r.best_hex, shiny: (r.shiny_count ?? 0) > 0 });
     return m;
   }, [rows]);
   const caught = useMemo(() => (rows ?? []).filter((r) => r.times_caught > 0).length, [rows]);
@@ -88,6 +88,7 @@ export default function Dex() {
               name={s?.name ?? null}
               hex={s?.bestHex ?? null}
               timesCaught={s?.timesCaught}
+              shiny={s?.shiny}
               onPress={() => router.push(`/entry/${item.no}`)}
             />
           );

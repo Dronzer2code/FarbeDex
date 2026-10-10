@@ -46,6 +46,11 @@ export const MIGRATIONS: readonly string[] = [
   `ALTER TABLE catches ADD COLUMN minority TEXT;`,
   // v3: palette mood title from the Namer (nullable; the app falls back to paletteMood()).
   `ALTER TABLE catches ADD COLUMN title TEXT;`,
+  // v4: pick-2-favourites registration + shiny colours (existing rows stay registered).
+  `ALTER TABLE catches ADD COLUMN registered INTEGER NOT NULL DEFAULT 1;
+   ALTER TABLE swatches ADD COLUMN registered INTEGER NOT NULL DEFAULT 1;
+   ALTER TABLE swatches ADD COLUMN shiny INTEGER NOT NULL DEFAULT 0;
+   ALTER TABLE entries ADD COLUMN shiny_count INTEGER NOT NULL DEFAULT 0;`,
 ];
 
 export const ENTRY_COUNT = 151;

@@ -37,6 +37,8 @@ export const useGate = create<GateState>((set) => ({
       }
     }
     await usePrefs.getState().load().catch(() => {});
+    // Catches left without chosen favourites (app closed mid-choice) get their top colours.
+    import('./favourites').then((m) => m.registerAllPending()).catch((e) => console.warn('[favourites] pending', e));
     set({ loaded: true, onboarded, modelsReady: allModelsReady() });
   },
   finishOnboarding: async () => {

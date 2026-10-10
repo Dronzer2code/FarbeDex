@@ -23,6 +23,7 @@ export interface EntryRow {
   best_hex: string | null;
   best_distance: number | null;
   best_catch_id: string | null;
+  shiny_count: number;
 }
 
 export interface CatchRow {
@@ -41,6 +42,7 @@ export interface CatchRow {
   live_checks: string;
   minority: string | null; // JSON MinoritySwatch[]
   title: string | null; // palette mood title (Namer)
+  registered: number; // 1 once favourites were chosen (or auto-picked)
 }
 
 export interface SwatchRow {
@@ -53,4 +55,6 @@ export interface SwatchRow {
   pct: number;
   is_new: number;
   rank: number;
+  registered: number; // 1 = counted in the FarbeDex (a chosen favourite)
+  shiny: number;
 }

@@ -36,7 +36,9 @@ export function Button({
       ]}
     >
       {icon}
-      <Text style={[styles.buttonText, { color: fg }]}>{label}</Text>
+      <Text style={[styles.buttonText, { color: fg }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+        {label}
+      </Text>
     </Pressable>
   );
 }

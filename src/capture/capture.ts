@@ -4,7 +4,6 @@ import { randomUUID } from 'expo-crypto';
 import { extractPalette, type Swatch } from '../color/extract';
 import { commitCatch } from '../db/catchRepo';
 import { getDb } from '../db/db';
-import { enqueueNamer } from '../namer/namer';
 import { runReferee } from '../referee/referee';
 import { bumpData } from '../store/data';
 import { computeLiveChecks, type LiveCheckResult, type RejectReason } from './liveChecks';
@@ -102,10 +101,9 @@ export async function runCapture(input: CaptureInput): Promise<CaptureOutcome> {
       liveChecks: { ...live, timings },
       swatches: extraction.swatches,
       minority: extraction.minority,
-    });
+    }, { register: 'none' });
     timings.commitMs = Date.now() - tC;
     bumpData();
-    enqueueNamer(id); // async; never blocks the result screen
     timings.totalMs = Date.now() - t0;
     return { kind: 'accepted', id, swatches: result.swatches, newEntryNos: result.newEntryNos, live, timings: timings as CaptureTimings };
   } catch (e) {

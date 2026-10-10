@@ -95,7 +95,7 @@ export default function ExportScreen() {
           <View style={styles.cardFrame} accessible accessibilityLabel={`Palette image: ${data?.title ?? ''}`}>
             {data ? <PaletteCard ref={cardRef} colours={data.card} title={data.title} caption={data.caption} /> : null}
           </View>
-          <Text style={styles.help}>Save to device asks for a folder the first time (for example Downloads).</Text>
+          <Text style={styles.help}>Save asks for a folder the first time (for example Downloads).</Text>
         </ScrollView>
       ) : tab === 'Contrast' ? (
         <ScrollView contentContainerStyle={styles.pairs}>
@@ -131,10 +131,10 @@ export default function ExportScreen() {
         {tab === 'Image' ? (
           <>
             <View style={{ flex: 1 }}>
-              <Button label="Save to device" variant="secondary" disabled={busy || !data} onPress={() => withImage(savePngToDevice, 'Saved')} />
+              <Button label="Save" variant="secondary" disabled={busy || !data} onPress={() => withImage(savePngToDevice, 'Saved')} />
             </View>
             <View style={{ flex: 1 }}>
-              <Button label="Share image" disabled={busy || !data} onPress={() => withImage(sharePng)} />
+              <Button label="Share" disabled={busy || !data} onPress={() => withImage(sharePng)} />
             </View>
           </>
         ) : (

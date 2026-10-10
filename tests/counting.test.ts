@@ -137,7 +137,7 @@ describe('catch counting', () => {
 
   it('stores minority colours and migrates to v2', async () => {
     const v = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
-    expect(v?.user_version).toBe(3);
+    expect(v?.user_version).toBe(4);
     await commitCatch(db, { ...catchOf('m1', 1, [sw(GREEN, 97, 0)]), minority: [{ entryNo: 115, hex: '#9CC8FF', pct: 2 }] });
     const c = (await getCatchRow(db, 'm1'))!;
     expect(parseMinority(c.catch.minority)).toEqual([{ entryNo: 115, hex: '#9CC8FF', pct: 2 }]);

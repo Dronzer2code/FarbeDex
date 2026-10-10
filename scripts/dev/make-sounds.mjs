@@ -85,6 +85,13 @@ wav('reject', render([
   { at: 0.12, dur: 0.2, freq: note(60), type: 'square', vol: 0.12, slide: 0.85 },
 ], 0.34));
 
+// Shiny: glittering cascade (two fast runs + bell tail).
+wav('shiny', render([
+  ...[84, 88, 91, 96, 91, 96, 100, 103].map((n, i) => ({ at: i * 0.05, dur: 0.12, freq: note(n), type: 'triangle', vol: 0.18 })),
+  ...[96, 100, 103, 108].map((n, i) => ({ at: 0.45 + i * 0.06, dur: 0.18, freq: note(n), type: 'pulse', vol: 0.07 })),
+  { at: 0.72, dur: 0.6, freq: note(108), type: 'triangle', vol: 0.2 },
+], 1.35));
+
 // App opening: warm three-chord flourish.
 wav('open', render([
   ...[[60, 64, 67], [65, 69, 72], [67, 71, 74]].flatMap((ch, i) => ch.map((n) => ({ at: i * 0.16, dur: 0.22, freq: note(n), type: 'triangle', vol: 0.12 }))),

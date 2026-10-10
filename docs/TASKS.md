@@ -117,6 +117,9 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Camera: flashlight toggle, largest picture size, quality 1.0, stored photo ≤ 4096 px JPEG 0.92 | Team request (max capability) |
 | 2026-10-10 | Original generated 8-bit sounds via expo-audio (playback-only plugin config); team-supplied game MP3s git-ignored and not used | Team request for game sounds declined on IP grounds (CLAUDE.md HARD RULES); originals cover the same moments (open, catch, shiny→new, legendary→rare, level up) |
 | 2026-10-10 | Home "field device" header: shell = latest catch colour, lens of recent colours, inset readout | Team request for a cooler collector-device dashboard; avoids franchise trade dress |
+| 2026-10-10 | Pick 2 favourites per Catch; only picks register (schema v4 `registered`); auto-pick top 2 if the user leaves or the app closes | Team rule: users choose which colours enter their FarbeDex |
+| 2026-10-10 | Shiny colours: 1/400 per Rare+ pick, gold rim + sparkles, special reveal animations and sound | Team request |
+| 2026-10-10 | Buttons never wrap (single line, shrink to fit); export labels Save / Share; rarity pill single line | Team UI feedback |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)

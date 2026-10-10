@@ -1,6 +1,6 @@
 // Organic pebble specimen (docs/UI_DESIGN.md → COMPONENTS). Variant = no % 3.
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Ellipse, Path } from 'react-native-svg';
+import Svg, { Ellipse, G, Path } from 'react-native-svg';
 
 import { usePrefs } from '../store/prefs';
 import { onColor } from './colorUtils';
@@ -15,12 +15,25 @@ const PEBBLES = [
 
 export type SpecimenSize = 56 | 120 | 200;
 
+const SPARKLES: [number, number, number][] = [
+  [86, 14, 9],
+  [12, 30, 6],
+  [90, 70, 5],
+];
+
+/** Four-point star centred on (x, y). */
+export function sparklePath(x: number, y: number, r: number): string {
+  const k = r * 0.28;
+  return `M${x} ${y - r} L${x + k} ${y - k} L${x + r} ${y} L${x + k} ${y + k} L${x} ${y + r} L${x - k} ${y + k} L${x - r} ${y} L${x - k} ${y - k} Z`;
+}
+
 export function Specimen({
   no,
   hex,
   size = 56,
   missing,
   face = true,
+  shiny = false,
 }: {
   no: number;
   hex?: string;
@@ -28,6 +41,8 @@ export function Specimen({
   missing?: boolean;
   /** Cozy face (team request 2026-10-10); also needs Settings → Faces on colours. */
   face?: boolean;
+  /** Shiny colour (1/400 on Rare+ picks): gold rim + sparkles. */
+  shiny?: boolean;
 }) {
   const d = PEBBLES[no % 3];
   const facesEnabled = usePrefs((p) => p.facesEnabled);
@@ -44,9 +59,17 @@ export function Specimen({
           <>
             <Path d={d} fill={hex ?? color.silhouette} />
             <Ellipse cx={36} cy={30} rx={15} ry={9} fill="#FFFFFF" opacity={0.25} transform="rotate(-25 36 30)" />
+            {shiny ? <Path d={d} fill="none" stroke="#FFD86B" strokeWidth={4} opacity={0.95} /> : null}
             {showFace ? <SpecimenFace no={no} ink={ink} spark={ink === '#FFFFFF' ? hex! : '#FFFFFF'} body={hex!} /> : null}
           </>
         )}
+        {shiny && !missing ? (
+          <G>
+            {SPARKLES.map(([x, y, r], i) => (
+              <Path key={i} d={sparklePath(x, y, r)} fill="#FFF6C9" stroke="#E0A800" strokeWidth={1} />
+            ))}
+          </G>
+        ) : null}
       </Svg>
       {missing ? (
         <View style={StyleSheet.absoluteFill} pointerEvents="none">

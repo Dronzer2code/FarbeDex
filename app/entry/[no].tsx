@@ -15,7 +15,7 @@ import { FAMILY_HINTS } from '../../src/dex/hints';
 import { neighborsOf, stepEntry } from '../../src/dex/neighbors';
 import { useDbQuery } from '../../src/store/data';
 import { FarbeMark, RARITY_LABEL, RarityIcon } from '../../src/ui/brand';
-import { FamilyChip, RarityChip } from '../../src/ui/Chip';
+import { Chip, FamilyChip, RarityChip } from '../../src/ui/Chip';
 import { tint } from '../../src/ui/colorUtils';
 import { NavArrow, SectionHeader } from '../../src/ui/controls';
 import { SegmentBar, StatColumn, ValueRow } from '../../src/ui/data';
@@ -79,7 +79,7 @@ export default function EntryDetail() {
         {/* Specimen on the arc + prev/next */}
         <View style={[styles.heroRow, { marginTop: -150 }]}>
           <NavArrow direction="left" label={`Previous entry, ${entryCode(stepEntry(no, -1))}`} onPress={() => go(-1)} />
-          <Specimen no={no} hex={bestHex ?? undefined} missing={!caught} size={200} />
+          <Specimen no={no} hex={bestHex ?? undefined} missing={!caught} shiny={caught && (row?.shiny_count ?? 0) > 0} size={200} />
           <NavArrow direction="right" label={`Next entry, ${entryCode(stepEntry(no, 1))}`} onPress={() => go(1)} />
         </View>
 
@@ -100,6 +100,7 @@ export default function EntryDetail() {
           <View style={styles.chips}>
             <FamilyChip family={entry.family} />
             <RarityChip rarity={entry.rarity} />
+            {caught && (row?.shiny_count ?? 0) > 0 ? <Chip label={`✦ Shiny ×${row!.shiny_count}`} /> : null}
           </View>
 
           <Text style={styles.description}>{description}</Text>
