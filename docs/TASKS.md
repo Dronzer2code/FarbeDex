@@ -36,7 +36,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T2 | B | `src/color/*` + `src/dex/*` + `scripts/build-dex.ts` + tests (oklab, reachable, rarity counts, map, kmeans determinism, extract %) | T0 | 4 h | dex-reachable, dex-rarity, kmeans, extract tests pass | DONE (114 tests green; 32³ grid reaches all 151, rarest #080/#089 = 1 sample, most common 2235 — matches prototype) |
 | T3 | B | `src/db/*` schema + migrations + catchRepo (commit/delete with recompute) + entryRepo + counting tests | T2 | 2.5 h | counting.test passes | DONE (repos take a `DbLike` interface; tests run the real SQL on in-memory `node:sqlite`) |
 | T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | DONE (code; visual check on phone pending in the CP2 checklist) |
-| T5 | A | Camera screen + `capture/*` (takePicture, motion ring buffer, imagePrep, liveChecks without Referee yet) → commit → navigate to result | T1, T3 | 3 h | AC-F2.1, AC-F2.4, AC-F2.5; MOTION_MIN calibrated | TODO |
+| T5 | A | Camera screen + `capture/*` (takePicture, motion ring buffer, imagePrep, liveChecks without Referee yet) → commit → navigate to result | T1, T3 | 3 h | AC-F2.1, AC-F2.4, AC-F2.5; MOTION_MIN calibrated | DOING (code + tests done; AC-F2.1 passes in jest; MOTION_MIN calibration + AC-F2.4/2.5 on phone pending) |
 | T6 | A | Referee: `build-label-embeddings.mjs` (laptop), preprocess, scoring, scene gate, subject label; calibrate with 10 screen + 10 outdoor shots; record results here | T1, T5 | 3 h | AC-F2.2, AC-F2.3 | TODO |
 | T7 | B | Catch result, Album, Photo Overview screens | T3, T4, T5 | 3 h | AC-F3.1, AC-F7.1, AC-F8.1; CP2 | TODO |
 | T8 | B | FarbeDex grid + filters + Entry detail (caught + missing states, prev/next, values copy, Seen in) | T3, T4 | 3.5 h | AC-F4.1–3, AC-F5.1–3 | TODO |
@@ -87,6 +87,9 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Invariant: `swatches.is_new = 1` exactly for the Catch whose id is `entries.first_catch_id`; deleting the first Catch moves NEW to the next earliest | Keeps NEW badges consistent with "first caught" stats after deletes (AC-F8.1) |
 | 2026-10-10 | Mythical iridescent border = 36-wedge conic SVG rotated with Reanimated (static under reduce-motion) | React Native has no conic gradient |
 | 2026-10-10 | Brand mark colours: light `#F2C48D`, mid `#D9774E`, deep `#3E5C7E` (sunset-to-sky prism) | UI_DESIGN gives the shape, not the colours |
+| 2026-10-10 | Motion window = 800 ms before the shutter press (snapshot taken before `takePictureAsync`); too few gyro samples with the sensor available counts as no motion | takePicture latency must not dilute the window; fail closed |
+| 2026-10-10 | `ACTIVITY_RECOGNITION` (declared by expo-sensors for its pedometer) added to `blockedPermissions` | CAMERA-only rule; DeviceMotion gyro needs no permission |
+| 2026-10-10 | Camera screen shows a dev-only overlay with live motion std and last capture timings | Calibrate MOTION_MIN and budgets without USB logs |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
