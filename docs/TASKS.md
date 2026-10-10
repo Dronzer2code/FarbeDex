@@ -31,8 +31,8 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 
 | ID | Owner | Task | Depends | Box | Acceptance check | STATUS |
 |---|---|---|---|---|---|---|
-| T0 | both | New repo (`docs/SETUP.md` §1–2; Entire SKIPPED), Expo TS app with expo-router, Android-only config, fonts, jest, lint, `eas.json` (`development` + `preview`), `tests/no-import-path` + `tests/no-franchise-terms` | — | 1.5 h | Dev-client APK installs and connects via QR; tests pass | TODO |
-| T1 | A | Native spike: add `onnxruntime-react-native` + `llama.rn`, rebuild dev-client APK, model downloader with dev-only LAN model source (`npx serve .models -l 8099`; no adb), load MobileCLIP vision ONNX and Gemma 3 270M GGUF from app storage, run one inference each, log time | T0 | 4 h | VERIFY-2, -4, -5, -7, -8 recorded; CP1 | TODO |
+| T0 | both | New repo (`docs/SETUP.md` §1–2; Entire SKIPPED), Expo TS app with expo-router, Android-only config, fonts, jest, lint, `eas.json` (`development` + `preview`), `tests/no-import-path` + `tests/no-franchise-terms` | — | 1.5 h | Dev-client APK installs and connects via QR; tests pass | DOING (code done, tests pass; waiting for APK install + QR connect on phone) |
+| T1 | A | Native spike: add `onnxruntime-react-native` + `llama.rn`, rebuild dev-client APK, model downloader with dev-only LAN model source (`npx serve .models -l 8099`; no adb), load MobileCLIP vision ONNX and Gemma 3 270M GGUF from app storage, run one inference each, log time | T0 | 4 h | VERIFY-2, -4, -5, -7, -8 recorded; CP1 | DOING (VERIFY recorded; `/dev/ai-spike` built; waiting for on-phone run; VERIFY-2 license decision open) |
 | T2 | B | `src/color/*` + `src/dex/*` + `scripts/build-dex.ts` + tests (oklab, reachable, rarity counts, map, kmeans determinism, extract %) | T0 | 4 h | dex-reachable, dex-rarity, kmeans, extract tests pass | TODO |
 | T3 | B | `src/db/*` schema + migrations + catchRepo (commit/delete with recompute) + entryRepo + counting tests | T2 | 2.5 h | counting.test passes | TODO |
 | T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | TODO |
@@ -74,6 +74,12 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Dev-only LAN model source replaces `adb push` | No adb; same downloader + md5 check as release, gated by `__DEV__` |
 | 2026-10-10 | `.models/` moved from the parent folder into the repo root (git-ignored) | Docs and `npx serve .models` assume repo-root `.models/` |
 | 2026-10-10 | Git repo initialised locally (none existed); `docs/~$_DESIGN.md` (Word lock file) git-ignored via `~$*` | No prior commits, so the "commits before 2026-10-05" check passes trivially |
+| 2026-10-10 | `llama.rn` pinned to 0.12.9 (latest stable), not the `latest`-tagged 0.13.0-rc.7 | Avoid release candidates in a 2-day build |
+| 2026-10-10 | llama.rn OpenCL/Hexagon disabled (`enableOpenCLAndHexagon: false`), CPU only (`n_gpu_layers: 0`) | Reference phone has a Mali GPU; llama.rn OpenCL supports Adreno only |
+| 2026-10-10 | Model download uses SDK 57 `DownloadTask`; resume from `.part` length; md5 via legacy async `getInfoAsync` | VERIFY-6: new-API md5 is synchronous and would freeze the UI |
+| 2026-10-10 | Routes stay in root `app/` (TRD layout), not SDK 57's default `src/app/` | TRD is the source of truth; expo-router supports both |
+| 2026-10-10 | `/dev/ai-spike` has "Copy report" (JSON to clipboard) | No USB/logcat; the human pastes results back to the agent |
+| 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
 
