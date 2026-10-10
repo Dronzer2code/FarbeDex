@@ -79,6 +79,7 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Model download uses SDK 57 `DownloadTask`; resume from `.part` length; md5 via legacy async `getInfoAsync` | VERIFY-6: new-API md5 is synchronous and would freeze the UI |
 | 2026-10-10 | Routes stay in root `app/` (TRD layout), not SDK 57's default `src/app/` | TRD is the source of truth; expo-router supports both |
 | 2026-10-10 | `/dev/ai-spike` has "Copy report" (JSON to clipboard) | No USB/logcat; the human pastes results back to the agent |
+| 2026-10-10 | Patched onnxruntime-react-native's Gradle script (patch-package) and pinned `onnxruntime-react-native` 1.24.3 / `llama.rn` 0.12.9 exactly | `VersionNumber` was removed in Gradle 9; local build failed (VERIFY-5) |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
