@@ -3,7 +3,7 @@
 // because averaging diverse prompts blurred the outdoor labels (laptop check, docs/TASKS.md).
 // Pure (shared by the app and the laptop check script).
 import type { SceneDecision } from '../capture/liveChecks';
-import { SCENE_ACCEPT_MIN } from './config';
+import { REJECT_LABELS, REJECT_MIN } from './config';
 
 export interface LabelVec {
   id: string;
@@ -44,26 +44,25 @@ export interface RefereeScore {
   outdoorP: number;
 }
 
-export function scoreReferee(imageVec: ArrayLike<number>, emb: LabelEmbeddings, acceptMin = SCENE_ACCEPT_MIN): RefereeScore {
+export function scoreReferee(imageVec: ArrayLike<number>, emb: LabelEmbeddings, rejectMin = REJECT_MIN): RefereeScore {
   const sp = softmaxScores(imageVec, emb.scene, emb.logitScale);
   const sceneProbs = Object.fromEntries(emb.scene.map((l, i) => [l.id, sp[i]]));
-  let best = 0;
-  for (let i = 1; i < sp.length; i++) if (sp[i] > sp[best]) best = i;
-  const label = emb.scene[best].id;
   const outdoorP = OUTDOOR_LABELS.reduce((s, id) => s + (sceneProbs[id] ?? 0), 0);
-  const accepted = (OUTDOOR_LABELS as readonly string[]).includes(label) && outdoorP >= acceptMin;
-  // A rejected outdoor-argmax (low confidence) reports its strongest non-outdoor label as the reason.
-  let reasonLabel = label;
-  if (!accepted && (OUTDOOR_LABELS as readonly string[]).includes(label)) {
-    const nonOutdoor = emb.scene.map((l, i) => ({ id: l.id, p: sp[i] })).filter((x) => !(OUTDOOR_LABELS as readonly string[]).includes(x.id));
-    reasonLabel = nonOutdoor.sort((a, b) => b.p - a.p)[0]?.id ?? 'INDOOR';
-  }
+  // Lenient gate: reject only a confident home interior or screen that clearly beats "outdoors".
+  const worst = (REJECT_LABELS as readonly string[])
+    .map((id) => ({ id, p: sceneProbs[id] ?? 0 }))
+    .sort((a, b) => b.p - a.p)[0];
+  const rejected = !!worst && worst.p >= rejectMin && worst.p > outdoorP;
+  const bestOutdoor = OUTDOOR_LABELS.map((id) => ({ id, p: sceneProbs[id] ?? 0 })).sort((a, b) => b.p - a.p)[0];
+  const scene = rejected
+    ? { accepted: false, label: worst.id, score: worst.p }
+    : { accepted: true, label: bestOutdoor.id, score: outdoorP };
 
   const subP = softmaxScores(imageVec, emb.subject, emb.logitScale);
   let bs = 0;
   for (let i = 1; i < subP.length; i++) if (subP[i] > subP[bs]) bs = i;
   return {
-    scene: { accepted, label: accepted ? label : reasonLabel, score: accepted ? outdoorP : sceneProbs[reasonLabel] },
+    scene,
     subject: emb.subject.length ? { label: emb.subject[bs].id, score: subP[bs] } : null,
     sceneProbs,
     outdoorP,

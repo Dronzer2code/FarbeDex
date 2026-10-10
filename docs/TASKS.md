@@ -55,7 +55,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | Check | Setting | Result |
 |---|---|---|
 | MOTION_MIN | UNKNOWN | phone on table: _ / hand-held: _ |
-| Scene gate threshold | 0.55 | Laptop (9 stock images, MobileCLIP fp16): outdoor accepted 5/6, non-outdoor (indoor, book cover, invoice) rejected 3/3 — no screen photos in the set. Phone: screens rejected _/10, outdoor accepted _/10 |
+| Scene gate | lenient: reject INDOOR/SCREEN ≥ 0.6 and > outdoor | Laptop (9 stock images, MobileCLIP fp16): outdoor accepted 5/6, non-outdoor (indoor, book cover, invoice) rejected 3/3 — no screen photos in the set. Phone: screens rejected _/10, outdoor accepted _/10 |
 | Referee latency | — | _ ms |
 | Extraction latency | — | _ ms |
 | Namer latency (5 names + note) | — | _ s |
@@ -109,6 +109,7 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Remote `origin` = https://github.com/Dronzer2code/FarbeDex.git; manifest release base set to its `models-v1` release | URL from the team |
 | 2026-10-10 | Referee = MobileCLIP-S0 fp16 (team: "whatever works good and takes least space"): 22.9 MB < TinyCLIP 24.3 MB, better subject labels; licence obligations met via `release/models-v1/` (agreement copy, attribution, Gemma NOTICE + Terms copy) | VERIFY-2 resolved by team |
 | 2026-10-10 | Root `react-native.config.js` registers `OnnxruntimePackage`; ORT/llama.rn imported lazily | Device crash: autolinking skipped ORT because of its `unimodule.json` (VERIFY-5); needs dev-client rebuild |
+| 2026-10-10 | Referee made lenient instead of removed: accept by default, reject only confident (≥ 0.6, above outdoor) home interiors or screens; PRINT never rejects; balcony/roof/pot-plant prompts added | Team: balcony/roof/near-home shots were all rejected as INDOOR; the Referee stays as the on-device anti-cheat (screens) and subject labeller. Laptop check: 6/6 outdoor accepted, indoor photo rejected |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)

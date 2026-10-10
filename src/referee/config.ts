@@ -59,5 +59,12 @@ export const REFEREE_IO = {
   dims: 512,
 } as const;
 
-/** Scene gate (calibrated in T6; docs/TASKS.md → CALIBRATION RECORD). */
+/**
+ * Lenient scene gate (team decision 2026-10-10, after on-phone tests rejected balconies/roofs as INDOOR):
+ * accept by default; reject only when a REJECT label is confident (≥ REJECT_MIN) AND beats the summed
+ * outdoor probability. PRINT never rejects. Calibrated in T6 (docs/TASKS.md → CALIBRATION RECORD).
+ */
+export const REJECT_LABELS = ['INDOOR', 'SCREEN'] as const;
+export const REJECT_MIN = 0.6;
+/** @deprecated strict gate threshold, kept for the laptop check script */
 export const SCENE_ACCEPT_MIN = 0.55;

@@ -192,15 +192,15 @@ Scene labels (group `scene`):
 
 | id | Prompts |
 |---|---|
-| OUTDOOR_NATURE | "a photo of plants outdoors", "a photo of the sky outside", "a photo taken outdoors in nature", "a photo of trees and grass", "a photo of a landscape", "a photo of flowers in a garden", "a photo of a beach or a lake", "a close-up photo of moss on a stone outside", "a close-up photo of a leaf outdoors", "a close-up photo of tree bark", "a macro photo of an insect on a flower" |
-| OUTDOOR_URBAN | "a photo of an outdoor street", "a photo of a building exterior", "a photo of a wall outside", "a photo of a city park", "a photo of a fence and a sidewalk" |
-| INDOOR | "a photo of a room indoors", "a photo of furniture inside a house", "a photo of an office interior", "a photo of a kitchen" |
-| SCREEN | "a photo of a computer monitor", "a photo of a phone screen", "a photo of a TV screen showing a picture", "a photo of a laptop screen on a desk", "a close-up photo of a screen with visible pixels", "a photo of a smartphone held in a hand showing a picture" |
-| PRINT | "a photo of a printed photograph", "a photo of a poster on a wall", "a photo of a book page", "a photo of a magazine held in a hand", "a photo of a postcard on a table" |
+| OUTDOOR_NATURE | plants outdoors, sky, nature, trees and grass, landscape, garden flowers, beach/lake, close-ups of moss/leaf/bark, insect macro, **potted plants on a balcony, a plant in a pot, a flower pot, a rooftop garden** |
+| OUTDOOR_URBAN | street, building exterior, wall outside, city park, fence and sidewalk, **view from a balcony, rooftop terrace, view from a roof, houses in a neighbourhood** |
+| INDOOR | **only clear home interiors:** bed in a bedroom, kitchen with appliances, refrigerator, washing machine, microwave oven, sofa in a living room, bathroom sink |
+| SCREEN | computer monitor, phone screen, TV showing a picture, laptop screen on a desk, screen with visible pixels, smartphone held in a hand showing a picture |
+| PRINT | printed photograph, poster on a wall, book page, magazine held in a hand (never a rejection reason) |
 
-(Prompts extended 2026-10-10 after the laptop check; the original three per label are kept.)
+Exact prompt strings: `scripts/build-label-embeddings.mjs`. Subject labels add **potted plant**.
 
-Accept when `argmax ∈ {OUTDOOR_NATURE, OUTDOOR_URBAN}` **and** `P(OUTDOOR_NATURE) + P(OUTDOOR_URBAN) ≥ 0.55`. Thresholds live in `referee/config.ts` and are calibrated in task T6 (10 screen shots, 10 outdoor shots; record results in `docs/TASKS.md`).
+**Lenient gate (team decision 2026-10-10, after on-phone tests rejected balconies, roofs and pot plants as INDOOR):** accept by default; reject only when `max(P(INDOOR), P(SCREEN)) ≥ REJECT_MIN (0.6)` **and** it exceeds `P(OUTDOOR_NATURE) + P(OUTDOOR_URBAN)`. PRINT is kept as a label but never rejects. INDOOR prompts describe only clear home interiors (bed, kitchen, appliances, sofa, bathroom); outdoor prompts include balconies, rooftops and potted plants. Constants in `referee/config.ts`; calibrated in T6 (record results in `docs/TASKS.md`).
 
 Subject labels (group `subject`, prompt template "a close-up photo of {label}"): sky, clouds, sunset sky, tree leaves, autumn leaves, grass, fern, moss, lichen, tree bark, flower, fruit, soil, rock, sand, water, wood, rusty metal, brick wall, painted wall. Stored subject = argmax label and its probability.
 

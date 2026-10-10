@@ -23,13 +23,24 @@ const SCENE = [
       'a photo of plants outdoors', 'a photo of the sky outside', 'a photo taken outdoors in nature',
       'a photo of trees and grass', 'a photo of a landscape', 'a photo of flowers in a garden', 'a photo of a beach or a lake',
       'a close-up photo of moss on a stone outside', 'a close-up photo of a leaf outdoors', 'a close-up photo of tree bark', 'a macro photo of an insect on a flower',
+      'a photo of potted plants on a balcony', 'a close-up photo of a plant in a pot', 'a photo of a flower pot', 'a photo of a rooftop garden',
     ],
   },
   {
     id: 'OUTDOOR_URBAN',
-    prompts: ['a photo of an outdoor street', 'a photo of a building exterior', 'a photo of a wall outside', 'a photo of a city park', 'a photo of a fence and a sidewalk'],
+    prompts: [
+      'a photo of an outdoor street', 'a photo of a building exterior', 'a photo of a wall outside', 'a photo of a city park', 'a photo of a fence and a sidewalk',
+      'a photo taken from a balcony', 'a photo of a rooftop terrace', 'a photo of the view from a roof', 'a photo of houses in a neighbourhood',
+    ],
   },
-  { id: 'INDOOR', prompts: ['a photo of a room indoors', 'a photo of furniture inside a house', 'a photo of an office interior', 'a photo of a kitchen'] },
+  {
+    // Only clear home interiors count as INDOOR (team decision 2026-10-10: be lenient).
+    id: 'INDOOR',
+    prompts: [
+      'a photo of a bed in a bedroom', 'a photo of a kitchen with appliances', 'a photo of a refrigerator',
+      'a photo of a washing machine', 'a photo of a microwave oven', 'a photo of a sofa in a living room', 'a photo of a bathroom sink',
+    ],
+  },
   {
     id: 'SCREEN',
     prompts: [
@@ -38,14 +49,15 @@ const SCENE = [
     ],
   },
   {
+    // Kept as a label so prints do not pull towards OUTDOOR, but never a rejection reason.
     id: 'PRINT',
-    prompts: ['a photo of a printed photograph', 'a photo of a poster on a wall', 'a photo of a book page', 'a photo of a magazine held in a hand', 'a photo of a postcard on a table'],
+    prompts: ['a photo of a printed photograph', 'a photo of a poster on a wall', 'a photo of a book page', 'a photo of a magazine held in a hand'],
   },
 ];
 
 const SUBJECTS = [
   'sky', 'clouds', 'sunset sky', 'tree leaves', 'autumn leaves', 'grass', 'fern', 'moss', 'lichen', 'tree bark',
-  'flower', 'fruit', 'soil', 'rock', 'sand', 'water', 'wood', 'rusty metal', 'brick wall', 'painted wall',
+  'flower', 'potted plant', 'fruit', 'soil', 'rock', 'sand', 'water', 'wood', 'rusty metal', 'brick wall', 'painted wall',
 ].map((label) => ({ id: label, prompts: [`a close-up photo of ${label}`] }));
 
 function l2(v) {
