@@ -1,0 +1,20 @@
+// WHERE-TO-LOOK HINTS — docs/UI_DESIGN.md.
+export const FAMILY_HINTS: Record<string, string> = {
+  Neutral: 'Stone, bark, clouds, concrete, shadows',
+  Rose: 'Petals, ripe fruit, dawn clouds',
+  Red: 'Flowers, berries, autumn leaves',
+  Vermilion: 'Rust, brick, sunset clouds',
+  Orange: 'Marigolds, dry leaves, soil, citrus',
+  Gold: 'Sunlit grass, yellow flowers, sand',
+  Lime: 'New leaves, moss in sun',
+  Green: 'Leaves, grass, moss',
+  Jade: 'Ferns, shaded foliage, ponds',
+  Teal: 'Water, painted doors, some leaves underside',
+  Cyan: 'Clear sky near the horizon, water reflections',
+  Azure: 'Clear sky overhead',
+  Blue: 'Deep sky, some flowers, painted surfaces',
+  Indigo: 'Dusk sky, some flowers',
+  Violet: 'Flowers, dusk clouds',
+  Magenta: 'Flowers, bougainvillea, sunset',
+  Fuchsia: 'Flowers, berries',
+};
