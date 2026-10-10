@@ -9,6 +9,7 @@ import { hexToOklab, hexToSrgb8, oklabToOklch } from '../../src/color/oklab';
 import { countCatches } from '../../src/db/catchRepo';
 import { catchesForEntry, getAllEntries } from '../../src/db/entryRepo';
 import { ENTRIES } from '../../src/dex/entries.generated';
+import { fieldNotesForFamily } from '../../src/dex/fieldNotes';
 import { foundIn } from '../../src/dex/foundIn';
 import { FAMILY_HINTS } from '../../src/dex/hints';
 import { neighborsOf, stepEntry } from '../../src/dex/neighbors';
@@ -175,6 +176,14 @@ export default function EntryDetail() {
               </View>
             </>
           ) : null}
+
+          {fieldNotesForFamily(entry.family).map((n) => (
+            <View key={n.id} style={styles.hint}>
+              <Text style={type.label}>Field note</Text>
+              <Text style={[styles.hintText, { fontFamily: type.title.fontFamily }]}>{n.title}</Text>
+              <Text style={styles.description}>{n.body}</Text>
+            </View>
+          ))}
         </View>
       </ScrollView>
     </View>

@@ -1,4 +1,5 @@
 // Catch result — docs/UI_DESIGN.md → Catch result; docs/PROCESS_FLOW.md → J2 step 4.
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -101,6 +102,13 @@ export default function CatchResult() {
     },
     [id],
   );
+
+  const rareNew = !!data?.c?.swatches.some((s) => s.is_new === 1 && ['LEGENDARY', 'MYTHICAL'].includes(ENTRIES[s.entry_no - 1].rarity));
+  useEffect(() => {
+    if (!rareNew) return;
+    const t = setTimeout(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}), 900);
+    return () => clearTimeout(t);
+  }, [rareNew]);
 
   if (!data) return <View style={styles.root} />;
   if (!data.c) {
