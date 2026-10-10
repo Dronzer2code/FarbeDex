@@ -108,6 +108,25 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | `expo-sharing` plugin pinned to `android.enabled: false` / `ios.enabled: false` + test | Plugin can add a share-intent receiver; camera-only rule forbids it (default is already off) |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
+## PHONE CHECKLIST — BATCH 1 (CP1–CP3)
+
+Dev-client APK: `D:\Temp\FarbeDex\FarbeDex-dev.apk` (local Gradle debug build, 2026-10-10). No rebuild is needed for anything below (native config changed since: blocked ACTIVITY_RECOGNITION, expo-sharing send-only, new icons — cosmetic/manifest only; they land in the release build).
+
+| # | Step | Checks | Result |
+|---|---|---|---|
+| 1 | Laptop: `npx serve .models -l 8099` and `npx expo start --dev-client`; phone: open dev build, scan QR | dev client connects | _ |
+| 2 | Onboarding → Set up the AI → Dev model source `http://<laptop-ip>:8099` → Save → Test connection | both files ✓ | _ |
+| 3 | Download; mid-way toggle airplane mode on, then off → Retry | AC-F1.1, AC-F1.2 (resumes) | _ |
+| 4 | Home → AI spike → Run Referee, Run Namer | CP1 GO/NO-GO; embedding 512; Namer JSON name | _ |
+| 5 | Camera hand-held vs phone lying still on a table (read green dev line: motion std) | AC-F2.4; MOTION_MIN calibration | _ |
+| 6 | 10 shots of a screen showing nature photos + 10 real outdoor scenes; then AI spike → Copy report (Referee log) | AC-F2.2, AC-F2.3 calibration | _ |
+| 7 | Catch result: names shimmer then change (Gemma); dev line shows namer timings | AC-F6.1, AC-F10.2 | _ |
+| 8 | Settings → Disable Gemma (dev) → catch → template names | AC-F10.1 | _ |
+| 9 | Album → Photo Overview (bar + list sum 100.0, NEW badges) → Export; long-press delete | AC-F3.1, AC-F8.1, AC-F7.1, AC-F11.1 | _ |
+| 10 | FarbeDex grid filters; Entry detail prev/next (151 → 1), copy HEX | AC-F4.1–3, AC-F5.1–3 | _ |
+| 11 | Phone gallery app shows no FarbeDex photos | AC-F2.5 | _ |
+| 12 | Airplane mode → kill + relaunch app → Home → catch | AC-F1.3, AC-G.2 | _ |
+
 ## PARALLELISM
 
 - After T0: A runs T1 (riskiest first); B runs T2 → T3 and T4.
