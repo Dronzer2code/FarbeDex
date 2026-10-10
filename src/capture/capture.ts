@@ -101,6 +101,7 @@ export async function runCapture(input: CaptureInput): Promise<CaptureOutcome> {
       otherPct: extraction.otherPct,
       liveChecks: { ...live, timings },
       swatches: extraction.swatches,
+      minority: extraction.minority,
     });
     timings.commitMs = Date.now() - tC;
     bumpData();

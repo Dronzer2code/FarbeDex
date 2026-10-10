@@ -25,7 +25,9 @@ export const SYSTEM_PROMPT =
   "You name colours for a designer's colour collection and give short interface advice. Reply with JSON only.";
 
 const RULES =
-  'Rules: each name 1-3 words, Title Case, evocative of the subject and the colour, no brand names, no numbers.\n' +
+  'Rules: for each new colour write "word": one or two evocative words about the subject or the place (for example "Rooftop Morning", "Wet Moss"). ' +
+  'Do NOT use colour or brightness words (dark, light, pale, deep, bright, blue, grey, black, white, charcoal...): the app adds the colour name after your words. ' +
+  'Title Case, no brand names, no numbers.\n' +
   'Then write "note": one sentence, at most 25 words, on how to use this palette in a user interface.';
 
 export function userMessage(r: NamerRequest): string {
@@ -36,7 +38,7 @@ export function userMessage(r: NamerRequest): string {
     `Names already used (do not reuse): ${r.usedNames.slice(0, 40).join(', ') || 'none'}`,
     RULES,
   ];
-  if (r.feedback) lines.push(`Your previous answer was rejected: ${r.feedback}. Give new names that follow the rules.`);
+  if (r.feedback) lines.push(`Your previous answer was rejected: ${r.feedback}. Give new words that follow the rules.`);
   return lines.join('\n');
 }
 
@@ -62,8 +64,8 @@ const FEW_SHOT: ChatMessage[] = [
     role: 'assistant',
     content: JSON.stringify({
       names: [
-        { no: 65, name: 'Wet Moss Velvet' },
-        { no: 4, name: 'Old Wall Stone' },
+        { no: 65, word: 'Wet Moss' },
+        { no: 4, word: 'Old Wall' },
       ],
       note: 'Use the stone grey as the page background and the moss green for primary buttons and links.',
     }),
@@ -78,13 +80,13 @@ const FEW_SHOT: ChatMessage[] = [
         { hex: '#F6D7A7', pct: 20.3 },
       ],
       newColours: [{ no: 40, hex: '#F29A4A', family: 'Orange', tone: 'vivid' }],
-      usedNames: ['Wet Moss Velvet', 'Old Wall Stone'],
+      usedNames: ['Wet Moss Green', 'Old Wall Stone'],
     }),
   },
   {
     role: 'assistant',
     content: JSON.stringify({
-      names: [{ no: 40, name: 'Late Ember Glow' }],
+      names: [{ no: 40, word: 'Late Ember' }],
       note: 'Keep the pale peach for cards, the dusk violet for headings, and the ember orange only for alerts.',
     }),
   },
@@ -107,9 +109,9 @@ export function buildSchema(nos: number[]): object {
             type: 'object',
             properties: {
               no: { type: 'integer', enum: nos },
-              name: { type: 'string', minLength: 3, maxLength: 28 },
+              word: { type: 'string', minLength: 3, maxLength: 18 },
             },
-            required: ['no', 'name'],
+            required: ['no', 'word'],
           },
         };
   return {
@@ -120,7 +122,7 @@ export function buildSchema(nos: number[]): object {
 }
 
 export interface NamerJson {
-  names: { no: number; name: string }[];
+  names: { no: number; word?: string; name?: string }[];
   note: string;
 }
 

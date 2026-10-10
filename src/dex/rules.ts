@@ -96,6 +96,12 @@ export function templateNameFor(no: number): string {
   return [CHROMA_WORD[cBand!], LIGHT_WORD[lBand!], family].filter(Boolean).join(' ');
 }
 
+/** The colour word the app appends to Gemma's evocative words: the hue family, or the neutral label. */
+export function colourWordFor(no: number): string {
+  const { family, neutralBand: nb } = entryCoords(no);
+  return nb !== null ? NEUTRAL_LABELS[nb] : family;
+}
+
 /** Namer "tone": `[lightWord chromaWord]` lowercased, e.g. "deep dusty" (docs/TRD.md → NAMER). */
 export function toneFor(no: number): string {
   const { lBand, cBand, neutralBand: nb } = entryCoords(no);

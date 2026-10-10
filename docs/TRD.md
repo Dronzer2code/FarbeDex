@@ -212,9 +212,10 @@ Subject labels (group `subject`, prompt template "a close-up photo of {label}"):
 - Output schema:
 
 ```json
-{ "names": [ { "no": 67, "name": "Wet Moss Stone" } ], "note": "Use the moss green as the page background and the rust as a sparing accent for buttons." }
+{ "names": [ { "no": 67, "word": "Wet Moss" } ], "note": "Use the moss green as the page background and the rust as a sparing accent for buttons." }
 ```
 
+- The stored name = `word` + the Entry's colour word (`src/dex/rules.ts` → `colourWordFor`); `word` must not contain colour/brightness words (`src/namer/validate.ts` → `composeName`).
 - Validation: `docs/DEX_SPEC.md` → NAMER OUTPUT RULES. Retry once with reasons; then templates.
 - Timeout: 12 s per call; on timeout use templates and keep the Catch.
 

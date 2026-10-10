@@ -1,7 +1,11 @@
 // App start gate — docs/PROCESS_FLOW.md → App start gate. Loaded once in the root layout.
 import { create } from 'zustand';
 
+import { getDb } from '../db/db';
+import { repairMismatchedNames } from '../db/entryRepo';
 import { SettingKey, getSetting, setSetting } from '../db/settingsRepo';
+import { ENTRIES } from '../dex/entries.generated';
+import { colourWordFor } from '../dex/rules';
 import { allModelsReady } from '../models/status';
 
 interface GateState {
@@ -23,6 +27,14 @@ export const useGate = create<GateState>((set) => ({
   devSkipModels: false,
   load: async () => {
     const onboarded = (await getSetting(SettingKey.onboardingDone)) === '1';
+    if ((await getSetting(SettingKey.namesRepairedV2)) !== '1') {
+      try {
+        await repairMismatchedNames(await getDb(), colourWordFor, (no) => ENTRIES[no - 1].templateName);
+        await setSetting(SettingKey.namesRepairedV2, '1');
+      } catch (e) {
+        console.warn('[names] repair failed', e);
+      }
+    }
     set({ loaded: true, onboarded, modelsReady: allModelsReady() });
   },
   finishOnboarding: async () => {

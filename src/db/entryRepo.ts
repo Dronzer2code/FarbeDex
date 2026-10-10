@@ -60,3 +60,19 @@ export async function resetAllData(db: DbLike): Promise<void> {
     );
   });
 }
+
+/**
+ * One-time repair (2026-10-10): earlier Gemma names could contradict the colour (e.g. a pale blue named
+ * "Dark Charcoal"). Names that do not end with the Entry's colour word revert to the template name.
+ */
+export async function repairMismatchedNames(db: DbLike, colourWordFor: (no: number) => string, templateFor: (no: number) => string): Promise<number> {
+  const rows = await db.getAllAsync<{ no: number; name: string }>("SELECT no, name FROM entries WHERE name IS NOT NULL AND name_source = 'GEMMA'");
+  let fixed = 0;
+  for (const r of rows) {
+    if (!r.name.toLowerCase().endsWith(` ${colourWordFor(r.no).toLowerCase()}`)) {
+      await setEntryName(db, r.no, templateFor(r.no), 'TEMPLATE');
+      fixed++;
+    }
+  }
+  return fixed;
+}

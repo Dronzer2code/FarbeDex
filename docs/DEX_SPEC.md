@@ -114,6 +114,7 @@ Input: the saved catch JPEG. Output: `Swatch[]` + `otherPct`.
 6. **Threshold:** Swatches with share < 3.0% move into **Other**. Keep at most 7 Swatches (largest shares); the rest move into Other.
 7. **Percentages:** convert shares to percentages with one decimal using the largest-remainder method so that `sum(Swatch pct) + otherPct = 100.0` exactly. If `otherPct = 0.0`, Other is not shown.
 8. **Order:** Swatches sorted by share, descending.
+9. **Minority colours** (team decision 2026-10-10): every colour that did not make the palette (step 6) is kept as `MinoritySwatch { entryNo, hex, pct }` (pct one decimal, total ≤ Other) and shown on the Catch result and Photo Overview under "Minority colours". Minority colours are never counted (no `timesCaught`, no NEW). Stored as JSON in `catches.minority` (schema v2).
 
 ```ts
 interface Swatch {
@@ -158,7 +159,9 @@ Used before the Namer has named an Entry or when the Namer is unavailable.
 
 ## NAMER OUTPUT RULES (Gemma)
 
-Each accepted name MUST:
+**Composition (team decision 2026-10-10):** Gemma returns only `word` — 1–2 evocative words about the subject or place, with no colour or brightness words. The app appends the Entry's colour word (`colourWordFor`: the Hue Family, or the neutral label such as "Stone"), e.g. "Rooftop Morning" + "Blue". This guarantees the hue in every name matches the Entry (a pale vivid blue was previously named "Dark Charcoal"). On first launch after the change, stored Gemma names that do not end with the Entry's colour word revert to the template name.
+
+Each accepted (composed) name MUST:
 
 - be 1–3 words, 3–28 characters, Title Case, using only letters, spaces, hyphens and apostrophes;
 - be unique among stored Entry names (case-insensitive);

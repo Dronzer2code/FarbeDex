@@ -1,5 +1,5 @@
 // Catches: commit (one transaction) and delete (full recompute) — docs/TRD.md → STORAGE.
-import type { Swatch } from '../color/extract';
+import type { MinoritySwatch, Swatch } from '../color/extract';
 import { bestDistance, computeEntryStats, type EntrySample } from './counting';
 import type { CatchRow, DbLike, EntryRow, SwatchRow } from './types';
 
@@ -17,6 +17,7 @@ export interface NewCatch {
   otherPct: number;
   liveChecks: unknown;
   swatches: Swatch[];
+  minority?: MinoritySwatch[];
 }
 
 export interface CommitResult {
@@ -32,9 +33,9 @@ export async function commitCatch(db: DbLike, c: NewCatch): Promise<CommitResult
   await db.withExclusiveTransactionAsync(async (tx) => {
     await tx.runAsync(
       `INSERT INTO catches (id, created_at, photo_path, thumb_path, width, height, subject_label, subject_score,
-        scene_label, scene_score, other_pct, note, live_checks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`,
+        scene_label, scene_score, other_pct, note, live_checks, minority) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)`,
       c.id, c.createdAt, c.photoPath, c.thumbPath, c.width, c.height, c.subjectLabel, finite(c.subjectScore, null),
-      c.sceneLabel, finite(c.sceneScore), finite(c.otherPct), JSON.stringify(c.liveChecks),
+      c.sceneLabel, finite(c.sceneScore), finite(c.otherPct), JSON.stringify(c.liveChecks), JSON.stringify(c.minority ?? []),
     );
     for (const s of c.swatches) {
       const e = await tx.getFirstAsync<EntryRow>('SELECT * FROM entries WHERE no = ?', s.entryNo);
@@ -116,6 +117,16 @@ export interface CatchSummary {
   other_pct: number;
   subject_label: string | null;
   strip: { hex: string; pct: number }[];
+}
+
+export function parseMinority(json: string | null | undefined): MinoritySwatch[] {
+  if (!json) return [];
+  try {
+    const v = JSON.parse(json);
+    return Array.isArray(v) ? v.filter((m) => m && typeof m.hex === 'string' && Number.isFinite(m.pct)) : [];
+  } catch {
+    return [];
+  }
 }
 
 /** Album list, newest first, each with its Distribution strip. */

@@ -46,6 +46,18 @@ describe('extract', () => {
     expect(new Set(swatches.map((s) => s.entryNo)).size).toBe(swatches.length);
   });
 
+  it('keeps minority colours (shown, not counted) within Other', () => {
+    const { minority, otherPct, swatches } = extractPalette(scene);
+    expect(minority.length).toBeGreaterThan(0);
+    const sum = Math.round(minority.reduce((s, m) => s + m.pct, 0) * 10) / 10;
+    expect(sum).toBeLessThanOrEqual(otherPct);
+    const kept = new Set(swatches.map((s) => s.entryNo));
+    minority.forEach((m) => {
+      expect(kept.has(m.entryNo)).toBe(false);
+      expect(m.hex).toMatch(/^#[0-9A-F]{6}$/);
+    });
+  });
+
   it('is deterministic (AC-F3.2)', () => {
     expect(extractPalette(scene)).toEqual(extractPalette(scene.slice()));
   });

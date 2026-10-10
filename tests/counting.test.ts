@@ -4,7 +4,10 @@ import { hexToOklab, oklabToOklch } from '../src/color/oklab';
 import { mulberry32 } from '../src/color/prng';
 import { commitCatch, deleteCatch, getCatch, listCatches, type NewCatch } from '../src/db/catchRepo';
 import { computeEntryStats } from '../src/db/counting';
-import { caughtCount, catchesForEntry, getEntry, resetAllData, setEntryName } from '../src/db/entryRepo';
+import { caughtCount, catchesForEntry, getEntry, repairMismatchedNames, resetAllData, setEntryName } from '../src/db/entryRepo';
+import { getCatch as getCatchRow, parseMinority } from '../src/db/catchRepo';
+import { colourWordFor } from '../src/dex/rules';
+import { ENTRIES } from '../src/dex/entries.generated';
 import { migrate } from '../src/db/migrate';
 import type { DbLike, SwatchRow } from '../src/db/types';
 import { entryNoForOklab } from '../src/dex/map';
@@ -130,6 +133,25 @@ describe('catch counting', () => {
         no, t: want.timesCaught, s: want.sumPct, f: want.firstCatchId, b: want.bestCatchId,
       });
     }
+  });
+
+  it('stores minority colours and migrates to v2', async () => {
+    const v = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
+    expect(v?.user_version).toBe(2);
+    await commitCatch(db, { ...catchOf('m1', 1, [sw(GREEN, 97, 0)]), minority: [{ entryNo: 115, hex: '#9CC8FF', pct: 2 }] });
+    const c = (await getCatchRow(db, 'm1'))!;
+    expect(parseMinority(c.catch.minority)).toEqual([{ entryNo: 115, hex: '#9CC8FF', pct: 2 }]);
+    expect((await getEntry(db, 115))!.times_caught).toBe(0); // minority never counts
+    expect(parseMinority('not json')).toEqual([]);
+  });
+
+  it('repairs Gemma names that contradict the colour', async () => {
+    await setEntryName(db, 115, 'Dark Charcoal', 'GEMMA');
+    await setEntryName(db, 67, `Wet Moss ${colourWordFor(67)}`, 'GEMMA');
+    const fixed = await repairMismatchedNames(db, colourWordFor, (no) => ENTRIES[no - 1].templateName);
+    expect(fixed).toBe(1);
+    expect(await getEntry(db, 115)).toMatchObject({ name: ENTRIES[114].templateName, name_source: 'TEMPLATE' });
+    expect((await getEntry(db, 67))!.name).toBe(`Wet Moss ${colourWordFor(67)}`);
   });
 
   it('album lists newest first with strips; reset clears everything', async () => {

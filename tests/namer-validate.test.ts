@@ -1,5 +1,5 @@
 import { findBlocked } from '../src/namer/blocklist';
-import { toTitleCase, validateName, validateNote } from '../src/namer/validate';
+import { composeName, toTitleCase, validateName, validateNote } from '../src/namer/validate';
 
 const opts = { usedNames: ['Moss Velvet'], templateName: 'Dusty Green' };
 
@@ -42,5 +42,23 @@ describe('namer validation', () => {
 
   it('toTitleCase collapses spaces', () => {
     expect(toTitleCase('  pale   SKY ')).toBe('Pale Sky');
+  });
+});
+
+describe('composeName (Gemma words + true colour word)', () => {
+  const o = { usedNames: ['Moss Velvet'], templateName: 'Vivid Pale Blue' };
+  it('appends the Entry colour word', () => {
+    expect(composeName('rooftop morning', 'Blue', o)).toEqual({ ok: true, name: 'Rooftop Morning Blue' });
+    expect(composeName('Old Wall', 'Stone', o)).toEqual({ ok: true, name: 'Old Wall Stone' });
+  });
+  it('rejects colour/brightness words so a blue can never be "Dark Charcoal"', () => {
+    expect(composeName('Dark Charcoal', 'Blue', o)).toMatchObject({ ok: false, reason: 'COLOUR_WORD' });
+    expect(composeName('Pale Sky', 'Blue', o)).toMatchObject({ ok: false, reason: 'COLOUR_WORD' });
+    expect(composeName('Grey-Green', 'Blue', o)).toMatchObject({ ok: false, reason: 'COLOUR_WORD' });
+  });
+  it('limits to two words and checks the composed name', () => {
+    expect(composeName('One Two Three', 'Blue', o)).toMatchObject({ ok: false, reason: 'WORDS' });
+    expect(composeName('', 'Blue', o)).toMatchObject({ ok: false, reason: 'FORMAT' });
+    expect(composeName('Moss', 'Velvet', o)).toMatchObject({ ok: false, reason: 'DUPLICATE' });
   });
 });

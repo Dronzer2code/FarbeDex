@@ -8,14 +8,14 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { cancelAnimation, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getCatch } from '../../src/db/catchRepo';
+import { getCatch, parseMinority } from '../../src/db/catchRepo';
 import { getAllEntries } from '../../src/db/entryRepo';
 import type { SwatchRow } from '../../src/db/types';
 import { ENTRIES } from '../../src/dex/entries.generated';
 import { useDbQuery } from '../../src/store/data';
 import { RarityChip } from '../../src/ui/Chip';
 import { Button } from '../../src/ui/controls';
-import { DistributionStrip, NewPill } from '../../src/ui/data';
+import { DistributionStrip, MinorityColours, NewPill } from '../../src/ui/data';
 import { displayName, entryCode } from '../../src/ui/format';
 import { Specimen } from '../../src/ui/Specimen';
 import { color, fontFamily, radius, shadow, space, type } from '../../src/ui/tokens';
@@ -136,6 +136,7 @@ export default function CatchResult() {
         {swatches.map((s, i) => (
           <SwatchCard key={s.entry_no} s={s} index={i} naming={naming} name={displayName(s.entry_no, data.names.get(s.entry_no))} />
         ))}
+        <MinorityColours minority={parseMinority(c.minority)} otherPct={c.other_pct} />
         {__DEV__ ? (
           <Text style={styles.dev}>
             {naming ? 'namer: working…' : `namer: ${lastNamer ? JSON.stringify(lastNamer) : '—'}`}

@@ -16,6 +16,7 @@ describe('namer prompt', () => {
     expect(m).toContain('New colours to name: [{"no":67');
     expect(m).toContain('Names already used (do not reuse): Old Gate Bark');
     expect(m).toContain('at most 25 words');
+    expect(m).toContain('Do NOT use colour or brightness words');
     expect(userMessage({ ...req, feedback: '#67: 1-3 words' })).toContain('rejected: #67: 1-3 words');
   });
 
@@ -31,8 +32,11 @@ describe('namer prompt', () => {
   });
 
   it('schema pins the requested entry numbers', () => {
-    const s = buildSchema([67, 4]) as { properties: { names: { minItems: number; items: { properties: { no: { enum: number[] } } } } } };
+    const s = buildSchema([67, 4]) as {
+      properties: { names: { minItems: number; items: { properties: { no: { enum: number[] }; word: object }; required: string[] } } };
+    };
     expect(s.properties.names.minItems).toBe(2);
+    expect(s.properties.names.items.required).toEqual(['no', 'word']);
     expect(s.properties.names.items.properties.no.enum).toEqual([67, 4]);
     expect((buildSchema([]) as { properties: { names: { maxItems: number } } }).properties.names.maxItems).toBe(0);
   });

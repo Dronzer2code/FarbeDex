@@ -6,12 +6,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
-import { getCatch } from '../../src/db/catchRepo';
+import { getCatch, parseMinority } from '../../src/db/catchRepo';
 import { getAllEntries } from '../../src/db/entryRepo';
 import { deleteCatchEverywhere, useDbQuery } from '../../src/store/data';
 import { Chip } from '../../src/ui/Chip';
 import { Button, ConfirmDialog, SectionHeader, Sheet } from '../../src/ui/controls';
-import { SegmentBar, SwatchRow } from '../../src/ui/data';
+import { MinorityColours, SegmentBar, SwatchRow } from '../../src/ui/data';
 import { displayName, formatDateTime } from '../../src/ui/format';
 import { ChevronIcon } from '../../src/ui/icons';
 import { showToast } from '../../src/ui/toast';
@@ -79,7 +79,7 @@ export default function PhotoOverview() {
             legend={false}
             segments={[
               ...swatches.map((s) => ({ key: String(s.entry_no), label: displayName(s.entry_no, data.names.get(s.entry_no)), pct: s.pct, color: s.hex })),
-              { key: 'other', label: 'Other', pct: c.other_pct, color: color.silhouette },
+              { key: 'other', label: 'Minority', pct: c.other_pct, color: color.silhouette },
             ]}
           />
           <View>
@@ -96,13 +96,7 @@ export default function PhotoOverview() {
                   onPress={() => router.push(`/entry/${s.entry_no}`)}
                 />
               ))}
-            {c.other_pct > 0 ? (
-              <View style={styles.otherRow}>
-                <View style={styles.otherDot} />
-                <Text style={styles.otherText}>Other</Text>
-                <Text style={styles.otherPct}>{c.other_pct.toFixed(1)}%</Text>
-              </View>
-            ) : null}
+            <MinorityColours minority={parseMinority(c.minority)} otherPct={c.other_pct} onPressEntry={(no) => router.push(`/entry/${no}`)} />
           </View>
 
           {c.note ? (
@@ -152,10 +146,6 @@ const styles = StyleSheet.create({
   body: { padding: space[4], gap: space[3] },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: space[3], flexWrap: 'wrap' },
   date: { fontSize: 13, fontFamily: fontFamily.ui400, color: color.inkSoft },
-  otherRow: { flexDirection: 'row', alignItems: 'center', gap: space[3], minHeight: 56 },
-  otherDot: { width: 44, height: 44, borderRadius: 22, backgroundColor: color.silhouette },
-  otherText: { flex: 1, fontSize: 15, fontFamily: fontFamily.ui500, color: color.inkSoft },
-  otherPct: { fontSize: 15, fontFamily: fontFamily.mono500, color: color.inkSoft },
   note: { backgroundColor: color.surface, borderRadius: radius.md, padding: space[4], gap: space[2], ...shadow.card },
   noteLabel: { ...type.label, color: color.inkSoft },
   noteText: { ...type.body, color: color.ink },

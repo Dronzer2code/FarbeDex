@@ -39,6 +39,7 @@ export interface CatchRow {
   other_pct: number;
   note: string | null;
   live_checks: string;
+  minority: string | null; // JSON MinoritySwatch[]
 }
 
 export interface SwatchRow {

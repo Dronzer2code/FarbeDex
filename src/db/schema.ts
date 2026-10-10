@@ -42,6 +42,8 @@ export const MIGRATIONS: readonly string[] = [
 
   CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
   `,
+  // v2: minority colours (JSON MinoritySwatch[]), shown on the Photo Overview but never counted.
+  `ALTER TABLE catches ADD COLUMN minority TEXT;`,
 ];
 
 export const ENTRY_COUNT = 151;

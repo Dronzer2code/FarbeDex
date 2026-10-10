@@ -146,4 +146,54 @@ const styles = StyleSheet.create({
   valueLabel: { ...type.label, color: color.inkSoft, width: 56 },
   value: { flex: 1, fontSize: 15, fontFamily: fontFamily.mono500, color: color.ink },
   copy: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  minority: { gap: space[2], paddingVertical: space[2] },
+  minorityHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  minorityTitle: { fontSize: 15, fontFamily: fontFamily.ui500, color: color.inkSoft },
+  minorityPct: { fontSize: 15, fontFamily: fontFamily.mono500, color: color.inkSoft },
+  minorityHelp: { fontSize: 12, fontFamily: fontFamily.ui400, color: color.inkSoft },
+  minorityWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
+  minorityChip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: color.surfaceSunken, borderRadius: radius.pill, paddingHorizontal: 10, minHeight: 36 },
+  minorityDot: { width: 16, height: 16, borderRadius: 8 },
+  minorityCode: { fontSize: 12, fontFamily: fontFamily.mono500, color: color.ink },
+  minorityChipPct: { fontSize: 12, fontFamily: fontFamily.mono500, color: color.inkSoft },
 });
+
+/** Colours seen in the photo but below the palette cut: shown, never counted (team decision 2026-10-10). */
+export function MinorityColours({
+  minority,
+  otherPct,
+  onPressEntry,
+}: {
+  minority: { entryNo: number; hex: string; pct: number }[];
+  otherPct: number;
+  onPressEntry?: (no: number) => void;
+}) {
+  if (otherPct <= 0) return null;
+  return (
+    <View style={styles.minority} accessible={!onPressEntry} accessibilityLabel={`Minority colours, ${otherPct.toFixed(1)} percent`}>
+      <View style={styles.minorityHead}>
+        <Text style={styles.minorityTitle}>Minority colours</Text>
+        <Text style={styles.minorityPct}>{otherPct.toFixed(1)}%</Text>
+      </View>
+      <Text style={styles.minorityHelp}>Too small to count as a catch — look for them in bigger patches.</Text>
+      {minority.length > 0 ? (
+        <View style={styles.minorityWrap}>
+          {minority.map((m) => (
+            <Pressable
+              key={m.entryNo}
+              onPress={onPressEntry ? () => onPressEntry(m.entryNo) : undefined}
+              disabled={!onPressEntry}
+              accessibilityRole={onPressEntry ? 'button' : 'text'}
+              accessibilityLabel={`Entry ${m.entryNo}, ${m.pct.toFixed(1)} percent, minority`}
+              style={styles.minorityChip}
+            >
+              <View style={[styles.minorityDot, { backgroundColor: m.hex }]} />
+              <Text style={styles.minorityCode}>#{String(m.entryNo).padStart(3, '0')}</Text>
+              <Text style={styles.minorityChipPct}>{m.pct.toFixed(1)}%</Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}

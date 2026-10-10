@@ -14,9 +14,17 @@ export interface Swatch {
   rank: number; // 0 = largest
 }
 
+/** A colour seen in the photo but below the palette cut (< 3% or beyond the top 7). Shown, never counted. */
+export interface MinoritySwatch {
+  entryNo: number;
+  hex: string;
+  pct: number; // one decimal, part of otherPct
+}
+
 export interface Extraction {
   swatches: Swatch[];
   otherPct: number;
+  minority: MinoritySwatch[];
 }
 
 export const EXTRACT = {
@@ -77,7 +85,7 @@ export function mergeClusters(clusters: Cluster[], threshold: number): Cluster[]
 
 export function extractFromOklab(points: Float64Array | Float32Array): Extraction {
   const n = points.length / 3;
-  if (n === 0) return { swatches: [], otherPct: 100 };
+  if (n === 0) return { swatches: [], otherPct: 100, minority: [] };
   const { centroids, counts } = kmeans(points, EXTRACT.k, EXTRACT.maxIter, EXTRACT.tol);
 
   let clusters: Cluster[] = [];
@@ -112,7 +120,19 @@ export function extractFromOklab(points: Float64Array | Float32Array): Extractio
     isNew: false,
     rank: i,
   }));
-  return { swatches, otherPct: units[units.length - 1] / 10 };
+  const otherPct = units[units.length - 1] / 10;
+  // Minority colours: everything that did not make the palette, largest first; their % never exceeds Other.
+  const keptSet = new Set(kept.map((k) => k.entryNo));
+  let budget = Math.round(otherPct * 10);
+  const minority: MinoritySwatch[] = [];
+  for (const s of sorted) {
+    if (keptSet.has(s.entryNo)) continue;
+    const u = Math.min(budget, Math.round(s.cl.w * 1000));
+    if (u <= 0) continue;
+    budget -= u;
+    minority.push({ entryNo: s.entryNo, hex: oklabToHex(s.cl.l, s.cl.a, s.cl.b), pct: u / 10 });
+  }
+  return { swatches, otherPct, minority };
 }
 
 /** Full extraction from decoded RGBA pixels (the 160 px analysis image). */

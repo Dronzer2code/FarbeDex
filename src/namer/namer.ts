@@ -7,14 +7,14 @@ import { getDb } from '../db/db';
 import { allNames, getAllEntries, setEntryName } from '../db/entryRepo';
 import { SettingKey, getSetting } from '../db/settingsRepo';
 import { ENTRIES } from '../dex/entries.generated';
-import { toneFor } from '../dex/rules';
+import { colourWordFor, toneFor } from '../dex/rules';
 import { getModelFile } from '../models/manifest';
 import { modelState } from '../models/status';
 import { bumpData } from '../store/data';
 import { showToast } from '../ui/toast';
 import { getNamerContext } from './llama';
 import { buildMessages, buildSchema, parseNamerJson, type NamerRequest, type NewColour } from './prompt';
-import { validateName, validateNote } from './validate';
+import { composeName, validateNote } from './validate';
 
 export const NAMER_TIMEOUT_MS = 12_000;
 
@@ -159,8 +159,12 @@ async function nameCatch(catchId: string): Promise<void> {
       const reasons: string[] = [];
       const stillPending: NewColour[] = [];
       for (const p of pending) {
-        const raw = json?.names.find((n) => n.no === p.no)?.name;
-        const v = validateName(raw, { usedNames: used, templateName: ENTRIES[p.no - 1].templateName });
+        // Gemma writes only the evocative words; the app appends the Entry's true colour word.
+        const item = json?.names.find((n) => n.no === p.no);
+        const v = composeName(item?.word ?? item?.name, colourWordFor(p.no), {
+          usedNames: used,
+          templateName: ENTRIES[p.no - 1].templateName,
+        });
         if (v.ok) {
           accepted.set(p.no, v.name);
           used.add(v.name);
