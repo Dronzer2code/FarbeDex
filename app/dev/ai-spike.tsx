@@ -6,7 +6,7 @@ import { File } from 'expo-file-system';
 import { Redirect } from 'expo-router';
 import { decode as decodeJpeg } from 'jpeg-js';
 import { useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { NativeModules, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MODEL_FILES } from '../../src/models/manifest';
 import { useModelDownloads, type ModelDlState } from '../../src/models/useModelDownloads';
@@ -151,6 +151,7 @@ export default function AiSpike() {
 
   const report = {
     androidApi: Platform.Version,
+    onnxNative: !!NativeModules.Onnxruntime,
     models: Object.fromEntries(MODEL_FILES.map((m) => [m.id, describe(dl.states[m.id])])),
     referee,
     namer,
@@ -172,6 +173,12 @@ export default function AiSpike() {
 
   return (
     <Screen>
+      <View style={styles.card}>
+        <Text style={styles.label}>Native modules in this APK</Text>
+        <Text style={styles.mono}>
+          ONNX Runtime: {NativeModules.Onnxruntime ? 'present ✓' : 'MISSING ✗ (old APK — install FarbeDex-dev-v2.apk)'}
+        </Text>
+      </View>
       <DevModelSource onChange={() => dl.refresh()} />
 
       <View style={styles.card}>
