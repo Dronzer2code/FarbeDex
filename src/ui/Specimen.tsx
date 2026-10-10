@@ -2,6 +2,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Ellipse, Path } from 'react-native-svg';
 
+import { usePrefs } from '../store/prefs';
+import { onColor } from './colorUtils';
+import { SpecimenFace } from './SpecimenFace';
 import { color, fontFamily } from './tokens';
 
 const PEBBLES = [
@@ -12,8 +15,24 @@ const PEBBLES = [
 
 export type SpecimenSize = 56 | 120 | 200;
 
-export function Specimen({ no, hex, size = 56, missing }: { no: number; hex?: string; size?: SpecimenSize | number; missing?: boolean }) {
+export function Specimen({
+  no,
+  hex,
+  size = 56,
+  missing,
+  face = true,
+}: {
+  no: number;
+  hex?: string;
+  size?: SpecimenSize | number;
+  missing?: boolean;
+  /** Cozy face (team request 2026-10-10); also needs Settings → Faces on colours. */
+  face?: boolean;
+}) {
   const d = PEBBLES[no % 3];
+  const facesEnabled = usePrefs((p) => p.facesEnabled);
+  const showFace = face && facesEnabled && !missing && !!hex && size >= 30;
+  const ink = showFace ? onColor(hex!) : '#000';
   return (
     <View style={{ width: size, height: size }}>
       <Svg width={size} height={size} viewBox="0 0 100 100">
@@ -25,6 +44,7 @@ export function Specimen({ no, hex, size = 56, missing }: { no: number; hex?: st
           <>
             <Path d={d} fill={hex ?? color.silhouette} />
             <Ellipse cx={36} cy={30} rx={15} ry={9} fill="#FFFFFF" opacity={0.25} transform="rotate(-25 36 30)" />
+            {showFace ? <SpecimenFace no={no} ink={ink} spark={ink === '#FFFFFF' ? hex! : '#FFFFFF'} body={hex!} /> : null}
           </>
         )}
       </Svg>

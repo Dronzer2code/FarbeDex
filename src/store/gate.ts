@@ -7,6 +7,7 @@ import { SettingKey, getSetting, setSetting } from '../db/settingsRepo';
 import { ENTRIES } from '../dex/entries.generated';
 import { colourWordFor } from '../dex/rules';
 import { allModelsReady } from '../models/status';
+import { usePrefs } from './prefs';
 
 interface GateState {
   loaded: boolean;
@@ -35,6 +36,7 @@ export const useGate = create<GateState>((set) => ({
         console.warn('[names] repair failed', e);
       }
     }
+    await usePrefs.getState().load().catch(() => {});
     set({ loaded: true, onboarded, modelsReady: allModelsReady() });
   },
   finishOnboarding: async () => {

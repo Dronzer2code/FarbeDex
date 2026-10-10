@@ -112,6 +112,7 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Referee made lenient instead of removed: accept by default, reject only confident (≥ 0.6, above outdoor) home interiors or screens; PRINT never rejects; balcony/roof/pot-plant prompts added | Team: balcony/roof/near-home shots were all rejected as INDOOR; the Referee stays as the on-device anti-cheat (screens) and subject labeller. Laptop check: 6/6 outdoor accepted, indoor photo rejected |
 | 2026-10-10 | Colours below the palette cut are shown as "Minority colours" (never counted) instead of a grey "Other"; `catches.minority` (schema v2) | Team: colours that did not make the palette should be visible as minority, not lost |
 | 2026-10-10 | Gemma writes only 1–2 evocative words; the app appends the Entry's colour word; colour words banned in Gemma's part; mismatched stored names repaired once | Team: a Mythical blue (#115) was named "Dark Charcoal" |
+| 2026-10-10 | Cozy faces on caught Specimens, deterministic per Entry (age × gender cues), toggle in Settings (default on); missing Entries stay faceless | Team request; kept original/generic to respect the IP rule; rendered and reviewed on laptop |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)

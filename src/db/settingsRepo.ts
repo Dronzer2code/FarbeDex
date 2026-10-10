@@ -6,6 +6,7 @@ export const SettingKey = {
   devModelBaseUrl: 'dev_model_base_url',
   namerDisabled: 'dev_namer_disabled',
   namesRepairedV2: 'names_repaired_v2',
+  facesEnabled: 'faces_enabled',
 } as const;
 
 export async function getSetting(key: string): Promise<string | null> {

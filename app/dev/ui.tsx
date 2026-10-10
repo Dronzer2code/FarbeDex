@@ -51,6 +51,13 @@ export default function UiKit() {
       </View>
       <Specimen no={moss.no} hex={moss.canonical.hex} size={200} />
 
+      <SectionHeader>Faces (deterministic per Entry)</SectionHeader>
+      <View style={styles.wrap}>
+        {ENTRIES.filter((_, i) => i % 9 === 4).map((e) => (
+          <Specimen key={e.no} no={e.no} hex={e.canonical.hex} size={64} />
+        ))}
+      </View>
+
       <SectionHeader>EntryCard</SectionHeader>
       <View style={styles.row}>
         <EntryCard entry={moss} caught name="Wet Moss Stone" hex="#5F7A3A" timesCaught={3} />

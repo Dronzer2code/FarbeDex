@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 import { Directory, Paths } from 'expo-file-system';
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { getDb } from '../../src/db/db';
 import { resetAllData } from '../../src/db/entryRepo';
@@ -13,6 +13,7 @@ import { modelState } from '../../src/models/status';
 import { useNamerStatus } from '../../src/namer/namer';
 import { bumpData, useDbQuery } from '../../src/store/data';
 import { useGate } from '../../src/store/gate';
+import { usePrefs } from '../../src/store/prefs';
 import { ConfirmDialog, SectionHeader } from '../../src/ui/controls';
 import { DevModelSource } from '../../src/ui/DevModelSource';
 import { DevNamerToggle } from '../../src/ui/DevNamerToggle';
@@ -47,6 +48,8 @@ export default function Settings() {
   const [confirm, setConfirm] = useState<null | 'data1' | 'data2' | 'models'>(null);
   const namerError = useNamerStatus((s) => s.lastError);
   const refreshModels = useGate((s) => s.refreshModels);
+  const facesEnabled = usePrefs((p) => p.facesEnabled);
+  const setFacesEnabled = usePrefs((p) => p.setFacesEnabled);
   const { data: storage, reload } = useDbQuery(async () => ({ catches: dirSize('catches') + dirSize('thumbs'), models: dirSize('models') }), []);
 
   const deleteAll = async () => {
@@ -76,6 +79,14 @@ export default function Settings() {
         ))}
         {namerError ? <Text style={styles.warn}>Namer offline last time — template names were used.</Text> : null}
         <Row label="Re-download models" onPress={() => setConfirm('models')} />
+      </View>
+
+      <SectionHeader>Display</SectionHeader>
+      <View style={styles.card}>
+        <View style={styles.row}>
+          <Text style={styles.rowLabel}>Faces on colours</Text>
+          <Switch value={facesEnabled} onValueChange={setFacesEnabled} accessibilityLabel="Faces on colours" />
+        </View>
       </View>
 
       <SectionHeader>Storage</SectionHeader>
