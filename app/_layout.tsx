@@ -72,6 +72,9 @@ export default function RootLayout() {
           <Stack.Screen name="catch-result/[id]" options={{ animation: 'fade' }} />
           <Stack.Screen name="photo/[id]" />
           <Stack.Screen name="entry/[no]" />
+          <Stack.Screen name="rarity" />
+          <Stack.Screen name="field-notes" />
+          <Stack.Screen name="licenses" />
           <Stack.Screen name="dev/ai-spike" options={{ headerShown: true, title: 'AI spike (dev)' }} />
           <Stack.Screen name="dev/ui" options={{ headerShown: true, title: 'UI kit (dev)' }} />
         </Stack>
