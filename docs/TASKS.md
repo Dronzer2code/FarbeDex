@@ -108,6 +108,7 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | `expo-sharing` plugin pinned to `android.enabled: false` / `ios.enabled: false` + test | Plugin can add a share-intent receiver; camera-only rule forbids it (default is already off) |
 | 2026-10-10 | Remote `origin` = https://github.com/Dronzer2code/FarbeDex.git; manifest release base set to its `models-v1` release | URL from the team |
 | 2026-10-10 | Referee = MobileCLIP-S0 fp16 (team: "whatever works good and takes least space"): 22.9 MB < TinyCLIP 24.3 MB, better subject labels; licence obligations met via `release/models-v1/` (agreement copy, attribution, Gemma NOTICE + Terms copy) | VERIFY-2 resolved by team |
+| 2026-10-10 | Root `react-native.config.js` registers `OnnxruntimePackage`; ORT/llama.rn imported lazily | Device crash: autolinking skipped ORT because of its `unimodule.json` (VERIFY-5); needs dev-client rebuild |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PHONE CHECKLIST — BATCH 1 (CP1–CP3)
