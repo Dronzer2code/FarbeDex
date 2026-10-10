@@ -77,7 +77,12 @@ async function complete(req: NamerRequest, nos: number[]): Promise<{ text: strin
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, reject) => {
     timer = setTimeout(() => {
-      ctx.stopCompletion().catch(() => {});
+      // stopCompletion may return void or a Promise depending on the binding path; never let it throw here.
+      try {
+        Promise.resolve(ctx.stopCompletion()).catch(() => {});
+      } catch {
+        // ignore
+      }
       reject(new Error('Namer timeout'));
     }, NAMER_TIMEOUT_MS);
   });
