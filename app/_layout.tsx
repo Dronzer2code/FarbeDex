@@ -6,11 +6,13 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { AppState, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { getDb } from '../src/db/db';
+import { releaseNamer } from '../src/namer/llama';
+import { isNamerBusy } from '../src/namer/namer';
 import { useGate } from '../src/store/gate';
 import { ToastHost } from '../src/ui/toast';
 import { color, fontFamily } from '../src/ui/tokens';
@@ -32,6 +34,14 @@ export default function RootLayout() {
       .then(() => useGate.getState().load())
       .then(() => setDbReady(true))
       .catch((e: unknown) => setDbError(String(e)));
+  }, []);
+
+  // Free the Namer model in the background unless it is mid-job (docs/TRD.md → NAMER).
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (s) => {
+      if (s === 'background' && !isNamerBusy()) releaseNamer().catch(() => {});
+    });
+    return () => sub.remove();
   }, []);
 
   const ready = (fontsLoaded || fontError) && (dbReady || dbError);

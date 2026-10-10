@@ -2,6 +2,7 @@ import { Link } from 'expo-router';
 import { StyleSheet, Text } from 'react-native';
 
 import { DevModelSource } from '../../src/ui/DevModelSource';
+import { DevNamerToggle } from '../../src/ui/DevNamerToggle';
 import { Screen } from '../../src/ui/Screen';
 import { color, type } from '../../src/ui/tokens';
 
@@ -12,6 +13,7 @@ export default function Settings() {
       {__DEV__ ? (
         <>
           <DevModelSource />
+          <DevNamerToggle />
           <Link href="/dev/ai-spike" style={styles.link}>
             Open AI spike (dev)
           </Link>

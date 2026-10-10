@@ -2,8 +2,9 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
+import { useNamerStatus } from '../../src/namer/namer';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getCatch } from '../../src/db/catchRepo';
@@ -18,7 +19,27 @@ import { displayName, entryCode } from '../../src/ui/format';
 import { Specimen } from '../../src/ui/Specimen';
 import { color, fontFamily, radius, shadow, space, type } from '../../src/ui/tokens';
 
-function SwatchCard({ s, name, index }: { s: SwatchRow; name: string; index: number }) {
+/** Name that pulses while the Namer is working (static under reduce-motion). */
+function ShimmerName({ name, waiting }: { name: string; waiting: boolean }) {
+  const reduce = useReducedMotion();
+  const o = useSharedValue(1);
+  useEffect(() => {
+    if (!waiting || reduce) {
+      cancelAnimation(o);
+      o.value = 1;
+      return;
+    }
+    o.value = withRepeat(withSequence(withTiming(0.35, { duration: 600 }), withTiming(1, { duration: 600 })), -1);
+  }, [waiting, reduce, o]);
+  const style = useAnimatedStyle(() => ({ opacity: o.value }));
+  return (
+    <Animated.Text style={[styles.name, style]} numberOfLines={1}>
+      {name}
+    </Animated.Text>
+  );
+}
+
+function SwatchCard({ s, name, index, naming }: { s: SwatchRow; name: string; index: number; naming: boolean }) {
   const entry = ENTRIES[s.entry_no - 1];
   const reduce = useReducedMotion();
   const isNew = s.is_new === 1;
@@ -55,9 +76,7 @@ function SwatchCard({ s, name, index }: { s: SwatchRow; name: string; index: num
         </Animated.View>
       </View>
       <View style={{ flex: 1, gap: 2 }}>
-        <Text style={styles.name} numberOfLines={1}>
-          {name}
-        </Text>
+        <ShimmerName name={name} waiting={naming && isNew} />
         <Text style={styles.code}>
           {entryCode(s.entry_no)} · {s.pct.toFixed(1)}%
         </Text>
@@ -72,6 +91,8 @@ function SwatchCard({ s, name, index }: { s: SwatchRow; name: string; index: num
 
 export default function CatchResult() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const naming = useNamerStatus((st) => !!st.pending[id]);
+  const lastNamer = useNamerStatus((st) => st.last);
   const { data } = useDbQuery(
     async (db) => {
       const c = await getCatch(db, id);
@@ -105,8 +126,14 @@ export default function CatchResult() {
           {newCount > 0 ? <Text style={styles.accent}> · {newCount} new!</Text> : null}
         </Text>
         {swatches.map((s, i) => (
-          <SwatchCard key={s.entry_no} s={s} index={i} name={displayName(s.entry_no, data.names.get(s.entry_no))} />
+          <SwatchCard key={s.entry_no} s={s} index={i} naming={naming} name={displayName(s.entry_no, data.names.get(s.entry_no))} />
         ))}
+        {__DEV__ ? (
+          <Text style={styles.dev}>
+            {naming ? 'namer: working…' : `namer: ${lastNamer ? JSON.stringify(lastNamer) : '—'}`}
+            {'\n'}capture: {c.live_checks}
+          </Text>
+        ) : null}
       </ScrollView>
       <View style={styles.actions}>
         <View style={{ flex: 1 }}>
@@ -130,5 +157,6 @@ const styles = StyleSheet.create({
   card: { flexDirection: 'row', alignItems: 'center', gap: space[3], backgroundColor: color.surface, borderRadius: radius.md, padding: space[3], ...shadow.card },
   name: { fontSize: 17, fontFamily: fontFamily.ui600, color: color.ink },
   code: { fontSize: 13, fontFamily: fontFamily.mono500, color: color.inkSoft },
+  dev: { fontFamily: fontFamily.mono500, fontSize: 10, color: color.inkSoft },
   actions: { flexDirection: 'row', gap: space[3], padding: space[4], paddingTop: space[2] },
 });

@@ -41,7 +41,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T7 | B | Catch result, Album, Photo Overview screens | T3, T4, T5 | 3 h | AC-F3.1, AC-F7.1, AC-F8.1; CP2 | DOING (screens built; AC-F3.1/F7.1/F8.1 logic covered by extract + counting tests; on-phone check pending) |
 | T8 | B | FarbeDex grid + filters + Entry detail (caught + missing states, prev/next, values copy, Seen in) | T3, T4 | 3.5 h | AC-F4.1–3, AC-F5.1–3 | DOING (grid + filters + search + Entry detail incl. Found-in and Neighbors built; AC-F4.3 + AC-F5.1/5.3 logic tested; on-phone check pending) |
 | T9 | A | Model delivery: upload model files to the repo's GitHub Release, manifest (url/bytes/md5), `/setup-models` download + verify + resume, onboarding, start gate | T1, T4 | 2.5 h | AC-F1.1–3 | DOING (onboarding, `/setup-models`, resumable download + md5, retry, storage precheck, start gate built; release URL owner UNRESOLVED until GitHub repo + release `models-v1` exist; phone check pending) |
-| T10 | A | Namer: prompt, llama.rn JSON-constrained call, validation, retry, templates, note; live update of result screen | T1, T7 | 3 h | AC-F6.1, AC-F10.1, AC-F10.2; CP3 | TODO |
+| T10 | A | Namer: prompt, llama.rn JSON-constrained call, validation, retry, templates, note; live update of result screen | T1, T7 | 3 h | AC-F6.1, AC-F10.1, AC-F10.2; CP3 | DOING (Namer queue, prompt + few-shots, JSON schema with pinned Entry numbers, validation, retry, template fallback, 12 s timeout, dev disable toggle, live name updates built; tests pass; on-phone naming quality + latency pending) |
 | T11 | B | Home (tiles, completion, Today's hunt, recent), Settings (models, storage, delete all, licenses), Rarity Guide | T8 | 2 h | Visible behaviour per `docs/UI_DESIGN.md` | TODO |
 | T12 | both | Airplane-mode pass of all MUST criteria; performance budgets measured; first outdoor field test (daylight) | T5–T11 | 2 h | AC-G.2; CP4 | TODO |
 | T13 | B | SHOULD: Export (CSS/Tailwind/Tokens/Contrast), Found-in bar, Neighbors, search, rarity/family filters | T12 | ≤ 3 h | AC-F11.1 | TODO |
@@ -94,6 +94,10 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Search never matches names of missing Entries | Missing cards show "???"; search must not reveal kept names |
 | 2026-10-10 | `/setup-models` has a dev-only "Skip for now (dev)" button and embeds the Dev model source field | Lets UI be tested before models are on the phone; release builds never show it |
 | 2026-10-10 | Storage precheck (MAY) implemented: needs model total + 50 MB free | Cheap with `Paths.availableDiskSpace` |
+| 2026-10-10 | Namer output schema pins `no` with `enum` of the requested Entry numbers and `minItems = maxItems = count` | Grammar forces exactly one name per new Entry |
+| 2026-10-10 | Names are normalised to Title Case before validation (not rejected for casing) | 270M model casing is unreliable; normalising is lossless |
+| 2026-10-10 | Design note generated for every Catch (also without new Entries); note validator rejects obvious nature-fact patterns (because, species, pigment, %, numbers) | DEX_SPEC forbids nature facts in notes |
+| 2026-10-10 | Namer runs one Catch at a time (queue); model released on background only when idle | Memory budget; TRD says finish if possible |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
