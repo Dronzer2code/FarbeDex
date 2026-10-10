@@ -14,7 +14,7 @@ Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass.
 3. **Two open models on the phone.**
    - **Referee:** a CLIP-style image encoder (ONNX Runtime) compares the photo with precomputed text embeddings (scene: outdoor / indoor / screen / print; subject: moss, sky, bark…). No text encoder runs on the phone.
    - **Namer:** Gemma 3 270M (GGUF Q4_K_M via llama.cpp / llama.rn) names newly caught Entries and writes a one-line design note, using JSON-constrained output, validation and a template fallback.
-4. **Offline.** After a one-time model download (about 276 MB) everything works in airplane mode. No account, no backend, no analytics. The only permission is the camera.
+4. **Offline.** After a one-time model download (276 MB) everything works in airplane mode. No account, no backend, no analytics. The only permission is the camera.
 
 ## Install
 
@@ -38,9 +38,9 @@ Expo Go cannot run this app (native ONNX Runtime and llama.cpp). Specs live in `
 | Model | Role | Source | License |
 |---|---|---|---|
 | Gemma 3 270M IT, GGUF Q4_K_M | Namer | huggingface.co/unsloth/gemma-3-270m-it-GGUF | Gemma Terms of Use |
-| Referee image encoder | Referee | _TODO: final choice (MobileCLIP-S0 fp16 or TinyCLIP-8M)_ | _TODO_ |
+| MobileCLIP-S0 image encoder, ONNX fp16 | Referee | huggingface.co/Xenova/mobileclip_s0 (from github.com/apple/ml-mobileclip) | Apple Machine Learning Research Model License |
 
-Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms. Use of Gemma through FarbeDex is subject to the Gemma Prohibited Use Policy (ai.google.dev/gemma/prohibited_use_policy).
+Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms. Apple Machine Learning Research Model is licensed under the Apple Machine Learning Research Model License Agreement. Copies of both agreements and the NOTICE file ship with the `models-v1` release (`release/models-v1/`). Use of Gemma through FarbeDex is subject to the Gemma Prohibited Use Policy (ai.google.dev/gemma/prohibited_use_policy).
 
 Open-source libraries: Expo and React Native (MIT), llama.cpp / llama.rn (MIT), ONNX Runtime (MIT), culori (MIT), jpeg-js (BSD-3-Clause), zustand (MIT), react-native-svg, Reanimated, Gesture Handler (MIT), Poppins and JetBrains Mono (SIL OFL 1.1).
 

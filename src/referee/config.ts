@@ -49,7 +49,8 @@ export const REFEREE_PRESETS: Record<RefereePreset['id'], RefereePreset> = {
   },
 };
 
-// UNRESOLVED (team decision, VERIFY-2): MobileCLIP licence is research-only; TinyCLIP is MIT.
+// Team decision 2026-10-10 (VERIFY-2): MobileCLIP-S0 fp16 — smallest file and best results. Its licence is
+// research-only; every distribution ships the agreement + attribution (release/models-v1/NOTICE.txt).
 export const ACTIVE_REFEREE: RefereePreset = REFEREE_PRESETS.mobileclip_s0_fp16;
 
 export const REFEREE_IO = {

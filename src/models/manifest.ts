@@ -12,8 +12,8 @@ export interface ModelFile {
   license: string;
 }
 
-// UNRESOLVED: GitHub owner of the release; set when release `models-v1` exists (docs/SETUP.md §5).
-export const MODEL_RELEASE_BASE = 'https://github.com/UNRESOLVED_OWNER/farbedex/releases/download/models-v1';
+// GitHub release `models-v1` of Dronzer2code/FarbeDex (docs/SETUP.md §5).
+export const MODEL_RELEASE_BASE = 'https://github.com/Dronzer2code/FarbeDex/releases/download/models-v1';
 
 export const MODEL_FILES: readonly ModelFile[] = [
   {

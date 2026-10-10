@@ -26,11 +26,11 @@ Human and agent setup steps for the repository, the Android development build (n
 
 ## 1 REPOSITORY
 
-1. GitHub: create a **new public** repo `farbedex` (owner UNKNOWN until the team shares the URL). No template, no prior code.
+1. GitHub: new public repo **https://github.com/Dronzer2code/FarbeDex** (created by the team).
 2. Exactly one git remote: `origin` = that GitHub repo.
 
 ```bash
-git remote add origin https://github.com/<owner>/farbedex.git
+git remote add origin https://github.com/Dronzer2code/FarbeDex.git
 git push -u origin main
 ```
 
@@ -104,8 +104,14 @@ ipconfig                           # Windows: note the Wi-Fi IPv4 address, e.g. 
 ## 5 MODEL HOSTING (T9)
 
 1. GitHub repo → Releases → **Draft a new release**, tag `models-v1`, title "FarbeDex model files".
-2. Attach both model files from `.models/` (GitHub allows release assets up to 2 GB each). Add license notices in the release notes: Gemma Terms of Use (VERIFY-7) and MobileCLIP license (VERIFY-2).
-3. Publish. Each asset URL has the form `https://github.com/<owner>/farbedex/releases/download/models-v1/<fileName>`; the manifest pins it with `bytes` and `md5`.
+2. Release notes: paste `release/models-v1/RELEASE_NOTES.md`.
+3. Attach exactly these 5 files (GitHub allows release assets up to 2 GB each):
+   - `.models/gemma-3-270m-it-Q4_K_M.gguf`
+   - `.models/mobileclip_s0_vision_fp16.onnx`
+   - `release/models-v1/NOTICE.txt`
+   - `release/models-v1/GEMMA_TERMS_OF_USE.txt`
+   - `release/models-v1/LICENSE_MOBILECLIP_MODELS.txt`
+4. Publish (not draft, not pre-release). Asset URLs: `https://github.com/Dronzer2code/FarbeDex/releases/download/models-v1/<fileName>`; the manifest pins `bytes` and `md5`. Check: `curl -sIL <url>` returns 200 with the right Content-Length.
 4. Test the in-app download on mobile data and Wi-Fi with a release (`preview`) build.
 
 ## 6 RELEASE APK (T15)

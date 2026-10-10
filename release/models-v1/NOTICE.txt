@@ -1,0 +1,16 @@
+FarbeDex model files (release models-v1)
+
+1) gemma-3-270m-it-Q4_K_M.gguf
+   Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms.
+   Use of this model is subject to the use restrictions in Section 3.2 of the Gemma Terms of Use, including the
+   Gemma Prohibited Use Policy (ai.google.dev/gemma/prohibited_use_policy). By downloading or using this file you
+   agree not to use it for those restricted uses. A copy of the Gemma Terms of Use is attached (GEMMA_TERMS_OF_USE.txt).
+   Source: huggingface.co/unsloth/gemma-3-270m-it-GGUF (unmodified file; base model google/gemma-3-270m-it).
+
+2) mobileclip_s0_vision_fp16.onnx
+   Apple Machine Learning Research Model is licensed under the Apple Machine Learning Research Model License Agreement.
+   A copy of the agreement is attached (LICENSE_MOBILECLIP_MODELS.txt).
+   This file is the MobileCLIP-S0 image encoder in ONNX fp16 format as published at
+   huggingface.co/Xenova/mobileclip_s0 (onnx/vision_model_fp16.onnx), unmodified by FarbeDex. It is a format
+   conversion of Apple's MobileCLIP-S0 (github.com/apple/ml-mobileclip); FarbeDex uses it for non-commercial,
+   open-source research and demonstration only.
