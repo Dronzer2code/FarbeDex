@@ -5,6 +5,7 @@ import { extractPalette, type Swatch } from '../color/extract';
 import { commitCatch } from '../db/catchRepo';
 import { getDb } from '../db/db';
 import { runReferee } from '../referee/referee';
+import { bumpData } from '../store/data';
 import { computeLiveChecks, type LiveCheckResult, type RejectReason } from './liveChecks';
 import { deleteCaptureFiles, deleteFileUri, prepareImages } from './imagePrep';
 import { motionStd, type MotionSample } from './motionMath';
@@ -101,6 +102,7 @@ export async function runCapture(input: CaptureInput): Promise<CaptureOutcome> {
       swatches: extraction.swatches,
     });
     timings.commitMs = Date.now() - tC;
+    bumpData();
     timings.totalMs = Date.now() - t0;
     return { kind: 'accepted', id, swatches: result.swatches, newEntryNos: result.newEntryNos, live, timings: timings as CaptureTimings };
   } catch (e) {

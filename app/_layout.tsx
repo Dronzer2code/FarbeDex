@@ -56,6 +56,8 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="catch" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
           <Stack.Screen name="catch-result/[id]" options={{ animation: 'fade' }} />
+          <Stack.Screen name="photo/[id]" />
+          <Stack.Screen name="entry/[no]" />
           <Stack.Screen name="dev/ai-spike" options={{ headerShown: true, title: 'AI spike (dev)' }} />
           <Stack.Screen name="dev/ui" options={{ headerShown: true, title: 'UI kit (dev)' }} />
         </Stack>
