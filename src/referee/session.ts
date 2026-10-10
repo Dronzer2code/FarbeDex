@@ -1,5 +1,6 @@
 // One InferenceSession for the app's lifetime (docs/TRD.md → REFEREE). CPU EP with XNNPACK first (VERIFY-5).
 import type { InferenceSession, Tensor as OrtTensor } from 'onnxruntime-react-native';
+import { NativeModules } from 'react-native';
 
 import { modelFileOnDisk, toFsPath } from '../models/download';
 import { getModelFile } from '../models/manifest';
@@ -10,6 +11,8 @@ type Ort = typeof import('onnxruntime-react-native');
 
 /** Lazy native import: if the module is missing, only the Referee fails (ERROR), not the whole app. */
 function ort(): Ort {
+  // Check first: requiring the package without its native module throws a fatal module-init error.
+  if (!NativeModules.Onnxruntime) throw new Error('ONNX Runtime native module missing — install a dev client built after 2026-10-10 11:45');
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   return require('onnxruntime-react-native') as Ort;
 }
