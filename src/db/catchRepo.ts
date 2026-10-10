@@ -24,6 +24,8 @@ export interface CommitResult {
   newEntryNos: number[];
 }
 
+const finite = (v: number | null, fallback: number | null = 0) => (v !== null && Number.isFinite(v) ? v : fallback);
+
 export async function commitCatch(db: DbLike, c: NewCatch): Promise<CommitResult> {
   const swatches: Swatch[] = [];
   const newEntryNos: number[] = [];
@@ -31,8 +33,8 @@ export async function commitCatch(db: DbLike, c: NewCatch): Promise<CommitResult
     await tx.runAsync(
       `INSERT INTO catches (id, created_at, photo_path, thumb_path, width, height, subject_label, subject_score,
         scene_label, scene_score, other_pct, note, live_checks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`,
-      c.id, c.createdAt, c.photoPath, c.thumbPath, c.width, c.height, c.subjectLabel, c.subjectScore,
-      c.sceneLabel, c.sceneScore, c.otherPct, JSON.stringify(c.liveChecks),
+      c.id, c.createdAt, c.photoPath, c.thumbPath, c.width, c.height, c.subjectLabel, finite(c.subjectScore, null),
+      c.sceneLabel, finite(c.sceneScore), finite(c.otherPct), JSON.stringify(c.liveChecks),
     );
     for (const s of c.swatches) {
       const e = await tx.getFirstAsync<EntryRow>('SELECT * FROM entries WHERE no = ?', s.entryNo);

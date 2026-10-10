@@ -19,9 +19,20 @@ function ort(): Ort {
 
 let sessionPromise: Promise<InferenceSession> | null = null;
 export let refereeProvider: 'xnnpack' | 'cpu' | null = null;
+let cpuOnly = false;
+
+/** Rebuild the session on the plain CPU provider (fp16 models can yield NaN on XNNPACK). */
+export function forceCpuSession(): void {
+  cpuOnly = true;
+  sessionPromise = null;
+}
 
 async function create(path: string): Promise<InferenceSession> {
   const { InferenceSession } = ort();
+  if (cpuOnly) {
+    refereeProvider = 'cpu';
+    return InferenceSession.create(path, { executionProviders: ['cpu'], graphOptimizationLevel: 'all' });
+  }
   try {
     const s = await InferenceSession.create(path, { executionProviders: ['xnnpack', 'cpu'], graphOptimizationLevel: 'all' });
     refereeProvider = 'xnnpack';

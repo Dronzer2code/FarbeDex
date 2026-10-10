@@ -8,7 +8,7 @@ import { modelState } from '../models/status';
 import { ACTIVE_REFEREE } from './config';
 import { preprocessToChw, type RgbaImage } from './preprocess';
 import { scoreReferee, type LabelEmbeddings } from './scoring';
-import { embedImage, getRefereeSession } from './session';
+import { embedImage, forceCpuSession, getRefereeSession, refereeProvider } from './session';
 
 export interface RefereeResult {
   scene: SceneDecision;
@@ -35,7 +35,19 @@ export async function runReferee(img: RgbaImage): Promise<RefereeResult> {
   }
   try {
     const chw = preprocessToChw(img, ACTIVE_REFEREE.inputSize, ACTIVE_REFEREE.mean, ACTIVE_REFEREE.std);
-    const vec = await embedImage(chw);
+    let vec = await embedImage(chw);
+    if (!vec.every(Number.isFinite) && refereeProvider === 'xnnpack') {
+      console.warn('[referee] non-finite on XNNPACK; retrying on CPU');
+      forceCpuSession();
+      vec = await embedImage(chw);
+    }
+    if (!vec.every(Number.isFinite)) {
+      // Non-finite embedding (seen on device): don't block the user (lenient gate), record it for calibration.
+      const r: RefereeResult = { scene: { accepted: true, label: 'OUTDOOR_UNSCORED', score: 0 }, subject: null, sceneProbs: {}, ms: Date.now() - t0 };
+      console.warn('[referee] non-finite embedding; provider', refereeProvider);
+      log(r);
+      return r;
+    }
     const s = scoreReferee(vec, EMB);
     const r: RefereeResult = { scene: s.scene, subject: s.subject, sceneProbs: s.sceneProbs, ms: Date.now() - t0 };
     log(r);
