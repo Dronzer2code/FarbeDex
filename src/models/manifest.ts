@@ -1,4 +1,5 @@
 // Model manifest — docs/TRD.md → MODEL DELIVERY. Sizes/md5 match docs/TASKS.md → CALIBRATION RECORD.
+import { ACTIVE_REFEREE } from '../referee/config';
 
 export type ModelId = 'referee' | 'namer';
 
@@ -17,12 +18,12 @@ export const MODEL_RELEASE_BASE = 'https://github.com/UNRESOLVED_OWNER/farbedex/
 export const MODEL_FILES: readonly ModelFile[] = [
   {
     id: 'referee',
-    // Source: huggingface.co/Xenova/mobileclip_s0 → onnx/vision_model_quantized.onnx (VERIFY-2)
-    fileName: 'mobileclip_s0_vision.onnx',
-    url: `${MODEL_RELEASE_BASE}/mobileclip_s0_vision.onnx`,
-    bytes: 11_846_843,
-    md5: 'e89a825d4f2c14897fc59acba7c5a0fa',
-    license: 'Apple Machine Learning Research Model License (MobileCLIP)',
+    // Active Referee preset (src/referee/config.ts; VERIFY-2 / VERIFY-3).
+    fileName: ACTIVE_REFEREE.fileName,
+    url: `${MODEL_RELEASE_BASE}/${ACTIVE_REFEREE.fileName}`,
+    bytes: ACTIVE_REFEREE.bytes,
+    md5: ACTIVE_REFEREE.md5,
+    license: ACTIVE_REFEREE.license,
   },
   {
     id: 'namer',

@@ -11,7 +11,10 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { MODEL_FILES } from '../../src/models/manifest';
 import { useModelDownloads, type ModelDlState } from '../../src/models/useModelDownloads';
 import { getNamerContext } from '../../src/namer/llama';
-import { REFEREE_MODEL } from '../../src/referee/config';
+import { ACTIVE_REFEREE } from '../../src/referee/config';
+import { useRefereeLog } from '../../src/referee/referee';
+import labels from '../../assets/labels/label-embeddings.json';
+import { scoreReferee, type LabelEmbeddings } from '../../src/referee/scoring';
 import { preprocessToChw } from '../../src/referee/preprocess';
 import { embedImage, getRefereeSession, refereeProvider } from '../../src/referee/session';
 import { DevModelSource } from '../../src/ui/DevModelSource';
@@ -42,7 +45,7 @@ async function runReferee(): Promise<Report> {
   const img = decodeJpeg(bytes, { useTArray: true, formatAsRGBA: true });
 
   const t0 = Date.now();
-  const chw = preprocessToChw(img, REFEREE_MODEL.inputSize, REFEREE_MODEL.mean, REFEREE_MODEL.std);
+  const chw = preprocessToChw(img, ACTIVE_REFEREE.inputSize, ACTIVE_REFEREE.mean, ACTIVE_REFEREE.std);
   const preprocessMs = Date.now() - t0;
 
   const t1 = Date.now();
@@ -59,9 +62,13 @@ async function runReferee(): Promise<Report> {
     await embedImage(chw);
     warm.push(Date.now() - t);
   }
+  const score = scoreReferee(emb, labels as LabelEmbeddings);
   return {
     ok: true,
+    model: ACTIVE_REFEREE.id,
     provider: refereeProvider,
+    sceneProbs: Object.fromEntries(Object.entries(score.sceneProbs).map(([k, v]) => [k, Number(v.toFixed(3))])),
+    subject: score.subject,
     image: `${img.width}x${img.height}`,
     preprocessMs,
     loadMs,
@@ -126,6 +133,7 @@ export default function AiSpike() {
   const [namer, setNamer] = useState<Report | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const refLog = useRefereeLog((st) => st.entries);
 
   if (!__DEV__) return <Redirect href="/" />;
 
@@ -146,6 +154,14 @@ export default function AiSpike() {
     models: Object.fromEntries(MODEL_FILES.map((m) => [m.id, describe(dl.states[m.id])])),
     referee,
     namer,
+    refereeLog: refLog.map((e) => ({
+      label: e.scene.label,
+      accepted: e.scene.accepted,
+      score: Number(e.scene.score.toFixed(3)),
+      probs: Object.fromEntries(Object.entries(e.sceneProbs).map(([k, v]) => [k, Number(v.toFixed(3))])),
+      subject: e.subject?.label,
+      ms: e.ms,
+    })),
   };
 
   const copy = async () => {
@@ -191,6 +207,17 @@ export default function AiSpike() {
           disabled={!!busy || dl.states.namer.kind !== 'ready'}
         />
         {namer ? <Text style={styles.mono}>{JSON.stringify(namer, null, 2)}</Text> : null}
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Referee calibration log (camera captures, newest first)</Text>
+        {refLog.length === 0 ? <Text style={styles.mono}>No captures yet.</Text> : null}
+        {refLog.slice(0, 20).map((e) => (
+          <Text key={e.at} style={styles.mono}>
+            {e.scene.accepted ? 'ACCEPT' : 'REJECT'} {e.scene.label} {e.scene.score.toFixed(2)} · {e.subject?.label ?? '-'} · {e.ms} ms
+          </Text>
+        ))}
+        {refLog.length ? <Button label="Clear log" secondary onPress={() => useRefereeLog.setState({ entries: [] })} /> : null}
       </View>
 
       <Button label={copied ? 'Copied' : 'Copy report'} onPress={copy} />

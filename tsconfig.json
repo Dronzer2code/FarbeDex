@@ -5,5 +5,5 @@
     "types": ["jest", "node"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "android", "ios", ".models"]
+  "exclude": ["node_modules", "android", "ios", ".models", "scripts/dev"]
 }

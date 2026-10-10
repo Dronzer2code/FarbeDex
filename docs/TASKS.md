@@ -37,7 +37,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T3 | B | `src/db/*` schema + migrations + catchRepo (commit/delete with recompute) + entryRepo + counting tests | T2 | 2.5 h | counting.test passes | DONE (repos take a `DbLike` interface; tests run the real SQL on in-memory `node:sqlite`) |
 | T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | DONE (code; visual check on phone pending in the CP2 checklist) |
 | T5 | A | Camera screen + `capture/*` (takePicture, motion ring buffer, imagePrep, liveChecks without Referee yet) → commit → navigate to result | T1, T3 | 3 h | AC-F2.1, AC-F2.4, AC-F2.5; MOTION_MIN calibrated | DOING (code + tests done; AC-F2.1 passes in jest; MOTION_MIN calibration + AC-F2.4/2.5 on phone pending) |
-| T6 | A | Referee: `build-label-embeddings.mjs` (laptop), preprocess, scoring, scene gate, subject label; calibrate with 10 screen + 10 outdoor shots; record results here | T1, T5 | 3 h | AC-F2.2, AC-F2.3 | TODO |
+| T6 | A | Referee: `build-label-embeddings.mjs` (laptop), preprocess, scoring, scene gate, subject label; calibrate with 10 screen + 10 outdoor shots; record results here | T1, T5 | 3 h | AC-F2.2, AC-F2.3 | DOING (label embeddings, preprocessing, scoring, gate, subject label, ERROR on Referee failure, dev calibration log built; laptop check done; phone calibration 10+10 + model licence decision pending) |
 | T7 | B | Catch result, Album, Photo Overview screens | T3, T4, T5 | 3 h | AC-F3.1, AC-F7.1, AC-F8.1; CP2 | DOING (screens built; AC-F3.1/F7.1/F8.1 logic covered by extract + counting tests; on-phone check pending) |
 | T8 | B | FarbeDex grid + filters + Entry detail (caught + missing states, prev/next, values copy, Seen in) | T3, T4 | 3.5 h | AC-F4.1–3, AC-F5.1–3 | DOING (grid + filters + search + Entry detail incl. Found-in and Neighbors built; AC-F4.3 + AC-F5.1/5.3 logic tested; on-phone check pending) |
 | T9 | A | Model delivery: upload model files to the repo's GitHub Release, manifest (url/bytes/md5), `/setup-models` download + verify + resume, onboarding, start gate | T1, T4 | 2.5 h | AC-F1.1–3 | DOING (onboarding, `/setup-models`, resumable download + md5, retry, storage precheck, start gate built; release URL owner UNRESOLVED until GitHub repo + release `models-v1` exist; phone check pending) |
@@ -55,7 +55,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | Check | Setting | Result |
 |---|---|---|
 | MOTION_MIN | UNKNOWN | phone on table: _ / hand-held: _ |
-| Scene gate threshold | 0.55 | screens rejected _/10, outdoor accepted _/10 |
+| Scene gate threshold | 0.55 | Laptop (9 stock images, MobileCLIP fp16): outdoor accepted 5/6, non-outdoor (indoor, book cover, invoice) rejected 3/3 — no screen photos in the set. Phone: screens rejected _/10, outdoor accepted _/10 |
 | Referee latency | — | _ ms |
 | Extraction latency | — | _ ms |
 | Namer latency (5 names + note) | — | _ s |
@@ -100,6 +100,10 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Namer runs one Catch at a time (queue); model released on background only when idle | Memory budget; TRD says finish if possible |
 | 2026-10-10 | Licenses screen carries the Gemma notice + Prohibited Use clause and, while the Referee is MobileCLIP, Apple's required attribution line | VERIFY-2 / VERIFY-7 redistribution conditions |
 | 2026-10-10 | `assets/field-notes.json` starts empty; Field Notes shows an empty state until a team member verifies cards (T14) | DEX_SPEC: unverified cards MUST NOT be shown; claims need human verification |
+| 2026-10-10 | Referee file = MobileCLIP-S0 **fp16** (`mobileclip_s0_vision_fp16.onnx`, 22.9 MB) instead of the uint8 quantized file in `.models/` | Laptop check: quantized embeddings unusable; fp16 = fp32 |
+| 2026-10-10 | Label score = best-matching prompt (max), scene prompts extended (TRD table updated) | Prompt-mean blurred outdoor labels; laptop check 3/6 → 5/6 outdoor accepted, 3/3 rejects kept |
+| 2026-10-10 | TinyCLIP-8M q8 (MIT) implemented as a switchable preset; `ACTIVE_REFEREE` stays MobileCLIP until the team decides | VERIFY-2 licence is a team decision |
+| 2026-10-10 | Dev-only: missing Referee model → captures accepted as `DEV_NO_REFEREE`; release: Referee failure → reject ERROR | Test the pipeline before models; never admit unverified Catches in release |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM

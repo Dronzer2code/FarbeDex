@@ -61,7 +61,7 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "build:dex": "tsx scripts/build-dex.ts",
-    "build:labels": "node scripts/build-label-embeddings.mjs",
+    "build:labels": "npm i --no-save @huggingface/transformers@3 && node scripts/build-label-embeddings.mjs",
     "postinstall": "patch-package"
   },
   "private": true
