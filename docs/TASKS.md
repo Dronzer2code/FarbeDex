@@ -33,7 +33,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 |---|---|---|---|---|---|---|
 | T0 | both | New repo (`docs/SETUP.md` §1–2; Entire SKIPPED), Expo TS app with expo-router, Android-only config, fonts, jest, lint, `eas.json` (`development` + `preview`), `tests/no-import-path` + `tests/no-franchise-terms` | — | 1.5 h | Dev-client APK installs and connects via QR; tests pass | DOING (code done, tests pass; waiting for APK install + QR connect on phone) |
 | T1 | A | Native spike: add `onnxruntime-react-native` + `llama.rn`, rebuild dev-client APK, model downloader with dev-only LAN model source (`npx serve .models -l 8099`; no adb), load MobileCLIP vision ONNX and Gemma 3 270M GGUF from app storage, run one inference each, log time | T0 | 4 h | VERIFY-2, -4, -5, -7, -8 recorded; CP1 | DOING (VERIFY recorded; `/dev/ai-spike` built; waiting for on-phone run; VERIFY-2 license decision open) |
-| T2 | B | `src/color/*` + `src/dex/*` + `scripts/build-dex.ts` + tests (oklab, reachable, rarity counts, map, kmeans determinism, extract %) | T0 | 4 h | dex-reachable, dex-rarity, kmeans, extract tests pass | TODO |
+| T2 | B | `src/color/*` + `src/dex/*` + `scripts/build-dex.ts` + tests (oklab, reachable, rarity counts, map, kmeans determinism, extract %) | T0 | 4 h | dex-reachable, dex-rarity, kmeans, extract tests pass | DONE (114 tests green; 32³ grid reaches all 151, rarest #080/#089 = 1 sample, most common 2235 — matches prototype) |
 | T3 | B | `src/db/*` schema + migrations + catchRepo (commit/delete with recompute) + entryRepo + counting tests | T2 | 2.5 h | counting.test passes | TODO |
 | T4 | B | Design system `src/ui/*` (tokens, Specimen, EntryCard, Chip, StatColumn, SegmentBar, SwatchRow, ValueRow, NavArrow, CatchButton, sheets/toasts), brand mark SVG, tab bar with center Catch button | T0 | 3 h | Storybook-like `/dev/ui` screen shows all components (dev only) | TODO |
 | T5 | A | Camera screen + `capture/*` (takePicture, motion ring buffer, imagePrep, liveChecks without Referee yet) → commit → navigate to result | T1, T3 | 3 h | AC-F2.1, AC-F2.4, AC-F2.5; MOTION_MIN calibrated | TODO |
@@ -80,6 +80,9 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Routes stay in root `app/` (TRD layout), not SDK 57's default `src/app/` | TRD is the source of truth; expo-router supports both |
 | 2026-10-10 | `/dev/ai-spike` has "Copy report" (JSON to clipboard) | No USB/logcat; the human pastes results back to the agent |
 | 2026-10-10 | Patched onnxruntime-react-native's Gradle script (patch-package) and pinned `onnxruntime-react-native` 1.24.3 / `llama.rn` 0.12.9 exactly | `VersionNumber` was removed in Gradle 9; local build failed (VERIFY-5) |
+| 2026-10-10 | Rarity, template names, tones and canonical colours live in `src/dex/rules.ts` (+ `buildEntries.ts`, `types.ts`) instead of separate `rarity.ts`/`templateName.ts` | One pure module shared by build-dex and runtime |
+| 2026-10-10 | OKLab conversion hand-written with culori's coefficients (culori used only in tests) | Per-pixel speed on Hermes; oklab.test checks ≤ 1e-6 vs culori |
+| 2026-10-10 | Cmax memo computes at the rounded key values (L = round(L·200)/200, h = round(h)) | Result depends only on the memo key → deterministic |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
