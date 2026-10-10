@@ -1,4 +1,4 @@
-// Root layout: fonts, DB init (model gate added in T9). docs/TRD.md → REPOSITORY LAYOUT.
+// Root layout: fonts, DB init, start gate (docs/PROCESS_FLOW.md → App start gate). docs/TRD.md → REPOSITORY LAYOUT.
 import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono';
 import { Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { getDb } from '../src/db/db';
+import { useGate } from '../src/store/gate';
 import { ToastHost } from '../src/ui/toast';
 import { color, fontFamily } from '../src/ui/tokens';
 
@@ -28,6 +29,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     getDb()
+      .then(() => useGate.getState().load())
       .then(() => setDbReady(true))
       .catch((e: unknown) => setDbError(String(e)));
   }, []);
@@ -54,6 +56,8 @@ export default function RootLayout() {
         <StatusBar style="dark" />
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: color.bg } }}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+          <Stack.Screen name="setup-models" options={{ gestureEnabled: false }} />
           <Stack.Screen name="catch" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
           <Stack.Screen name="catch-result/[id]" options={{ animation: 'fade' }} />
           <Stack.Screen name="photo/[id]" />

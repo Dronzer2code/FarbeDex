@@ -22,7 +22,7 @@ import { EntryCard } from '../../src/ui/EntryCard';
 import { displayName, entryCode, formatDay } from '../../src/ui/format';
 import { ChevronIcon } from '../../src/ui/icons';
 import { Specimen } from '../../src/ui/Specimen';
-import { color, fontFamily, radius, rarityColor, shadow, space, type } from '../../src/ui/tokens';
+import { color, radius, rarityColor, shadow, space, type } from '../../src/ui/tokens';
 
 const FOUND_IN_COLORS = ['#3F5A2E', '#7FA05A', '#B9C99A'];
 

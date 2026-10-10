@@ -40,7 +40,7 @@ STATUS: `TODO` · `DOING` · `DONE` · `CUT`.
 | T6 | A | Referee: `build-label-embeddings.mjs` (laptop), preprocess, scoring, scene gate, subject label; calibrate with 10 screen + 10 outdoor shots; record results here | T1, T5 | 3 h | AC-F2.2, AC-F2.3 | TODO |
 | T7 | B | Catch result, Album, Photo Overview screens | T3, T4, T5 | 3 h | AC-F3.1, AC-F7.1, AC-F8.1; CP2 | DOING (screens built; AC-F3.1/F7.1/F8.1 logic covered by extract + counting tests; on-phone check pending) |
 | T8 | B | FarbeDex grid + filters + Entry detail (caught + missing states, prev/next, values copy, Seen in) | T3, T4 | 3.5 h | AC-F4.1–3, AC-F5.1–3 | DOING (grid + filters + search + Entry detail incl. Found-in and Neighbors built; AC-F4.3 + AC-F5.1/5.3 logic tested; on-phone check pending) |
-| T9 | A | Model delivery: upload model files to the repo's GitHub Release, manifest (url/bytes/md5), `/setup-models` download + verify + resume, onboarding, start gate | T1, T4 | 2.5 h | AC-F1.1–3 | TODO |
+| T9 | A | Model delivery: upload model files to the repo's GitHub Release, manifest (url/bytes/md5), `/setup-models` download + verify + resume, onboarding, start gate | T1, T4 | 2.5 h | AC-F1.1–3 | DOING (onboarding, `/setup-models`, resumable download + md5, retry, storage precheck, start gate built; release URL owner UNRESOLVED until GitHub repo + release `models-v1` exist; phone check pending) |
 | T10 | A | Namer: prompt, llama.rn JSON-constrained call, validation, retry, templates, note; live update of result screen | T1, T7 | 3 h | AC-F6.1, AC-F10.1, AC-F10.2; CP3 | TODO |
 | T11 | B | Home (tiles, completion, Today's hunt, recent), Settings (models, storage, delete all, licenses), Rarity Guide | T8 | 2 h | Visible behaviour per `docs/UI_DESIGN.md` | TODO |
 | T12 | both | Airplane-mode pass of all MUST criteria; performance budgets measured; first outdoor field test (daylight) | T5–T11 | 2 h | AC-G.2; CP4 | TODO |
@@ -92,6 +92,8 @@ Reasonable choices the agent made without asking (newest last). Each entry: date
 | 2026-10-10 | Camera screen shows a dev-only overlay with live motion std and last capture timings | Calibrate MOTION_MIN and budgets without USB logs |
 | 2026-10-10 | Search, Rarity/Family filters, Found-in bar and Neighbors built inside T8 (they were T13 SHOULD items) | Cheap once the grid/detail exist; reduces T13 to Export |
 | 2026-10-10 | Search never matches names of missing Entries | Missing cards show "???"; search must not reveal kept names |
+| 2026-10-10 | `/setup-models` has a dev-only "Skip for now (dev)" button and embeds the Dev model source field | Lets UI be tested before models are on the phone; release builds never show it |
+| 2026-10-10 | Storage precheck (MAY) implemented: needs model total + 50 MB free | Cheap with `Paths.availableDiskSpace` |
 | 2026-10-10 | Spike test image is procedurally generated (`assets/dev/spike-test.jpg`) | No third-party photo licence to track |
 
 ## PARALLELISM
